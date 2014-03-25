@@ -11,3 +11,5 @@ venv/
 virtenv/
 dist/
 build/
+CREDENTIALS
+local_settings.py
