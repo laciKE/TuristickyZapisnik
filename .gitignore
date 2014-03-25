@@ -7,9 +7,10 @@
 *.egg-info
 .project
 .pydevproject
+secret_key.txt
 venv/
 virtenv/
 dist/
 build/
-CREDENTIALS
-secret_key.txt
+private/
+wsgi/media/avatars
