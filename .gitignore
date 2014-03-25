@@ -12,4 +12,4 @@ virtenv/
 dist/
 build/
 CREDENTIALS
-local_settings.py
+secret_key.txt
