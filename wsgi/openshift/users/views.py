@@ -1,4 +1,5 @@
 from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import render, render_to_response
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -92,11 +93,11 @@ def user_login(request):
                 return HttpResponseRedirect(reverse('users:index'))
             else:
                 # An inactive account was used - no logging in!
-                return HttpResponse("Your account has been disabled.")
+                return HttpResponse(_('Your account has been disabled.'))
         else:
             # Bad login details were provided. So we can't log the user in.
             print "Invalid login details: {0}, {1}".format(username, password)
-            return HttpResponse("Invalid login details supplied.")
+            return HttpResponse(_('Invalid login details supplied.'))
 
     # The request is not a HTTP POST, so display the login form.
     # This scenario would most likely be a HTTP GET.

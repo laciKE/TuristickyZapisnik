@@ -1,5 +1,11 @@
-<h2>Registration</h2>
+{% extends "base.html" %}
 
+{% load i18n %}
+
+
+{% block content %}
+
+<h2>{% trans "Registration" %}</h2>
         {% if registered %}
         <strong>thank you for registering!</strong>
         {% else %}
@@ -20,3 +26,5 @@
             <input type="submit" name="submit" value="Register" />
         </form>
         {% endif %}
+
+{% endblock %}

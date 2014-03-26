@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 import imp
+from django.core.urlresolvers import reverse
 
 from local_settings import *
 
@@ -90,6 +91,14 @@ TEMPLATE_DIRS = (
      os.path.join(BASE_DIR,'templates'),
 )
 
+# access to request variable in templates (needed for data-url and redirects)
+# http://stackoverflow.com/questions/7620680/how-can-i-get-django-redirect-to-work-when-using-jquery-mobile
+# http://blog.willmer.org/2008/06/how-to-access-the-django-request-inside-a-template-tag/
+TEMPLATE_CONTEXT_PROCESSORS = (
+	'django.core.context_processors.request',
+	'django.contrib.auth.context_processors.auth',
+)
+
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 if ON_OPENSHIFT:
@@ -128,7 +137,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 STATIC_ROOT = os.path.join(BASE_DIR, '..', 'static')
+STATICFILES_DIRS = (
+	os.path.join(BASE_DIR, 'static'),
+)
+
 STATIC_URL = '/static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, '..', 'media')
 MEDIA_URL = '/media/'
+
+LOGIN_URL = reverse('users:login')

@@ -1,4 +1,9 @@
-<h2>Login</h2>
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+
+<h2>{% trans "Login" %}</h2>
 
         <form id="login_form" method="post" action="{% url 'users:login' %}">
             {% csrf_token %}
@@ -7,5 +12,7 @@
             Password: <input type="password" name="password" value="" size="50" />
             <br />
 
-            <input type="submit" value="submit" />
+            <input type="submit" value="Login" />
         </form>
+
+{% endblock %}
