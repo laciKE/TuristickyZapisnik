@@ -8,9 +8,10 @@
 .project
 .pydevproject
 secret_key.txt
+db.sqlite3
 venv/
 virtenv/
 dist/
 build/
 private/
-wsgi/media/avatars
+wsgi/media/avatars/*

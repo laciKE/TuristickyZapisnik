@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from users.forms import UserForm, UserProfileForm
+import Image
 # Create your views here.
 
 def registration(request):
@@ -19,27 +20,26 @@ def registration(request):
         # If the two forms are valid...
         if user_form.is_valid() and profile_form.is_valid():
             # Save the user's form data to the database.
-            user = user_form.save()
-
-            # Now we hash the password with the set_password method.
-            # Once hashed, we can update the user object.
-            user.set_password(user.password)
-            user.save()
-
-            # Now sort out the UserProfile instance.
             # Since we need to set the user attribute ourselves, we set commit=False.
             # This delays saving the model until we're ready to avoid integrity problems.
+ 
+            user = user_form.save(commit=False)
+
+            # Now we hash the password with the set_password method.
+            user.set_password(user.password)
+
             profile = profile_form.save(commit=False)
-            profile.user = user
 
             # Did the user provide a profile picture?
             # If so, we need to get it from the input form and put it in the UserProfile model.
             if 'avatar' in request.FILES:
-                profile.avatar = request.FILES['avatar']
+                profile_avatar = request.FILES['avatar']
 
-            # Now we save the UserProfile model instance.
+            # Now we save the UserProfile and User model instance.
+            user.save()
+            profile.user = user
             profile.save()
-
+            
             # Update our variable to tell the template registration was successful.
             registered = True
 
