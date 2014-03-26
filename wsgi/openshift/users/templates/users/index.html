@@ -1,6 +1,7 @@
 <h1>Turistický zápisník</h1>
 {% if user.is_authenticated %}
 <h3>vitaj, {{ user.username }}!</h3>
+<a href="{% url 'users:logout'%}" >logout</a><br/>
 {% else %}
 <h3>vitaj, navstevnik</h3>
 <a href="{% url 'users:login'%}" >login</a><br/>
