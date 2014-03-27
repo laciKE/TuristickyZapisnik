@@ -143,7 +143,11 @@ STATICFILES_DIRS = (
 
 STATIC_URL = '/static/'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, '..', 'media')
+if ON_OPENSHIFT:
+	MEDIA_ROOT = os.path.join(os.environ['OPENSHIFT_DATA_DIR'], 'media')
+else:
+	MEDIA_ROOT = os.path.join(BASE_DIR, '..', 'media')
+
 MEDIA_URL = '/media/'
 
-LOGIN_URL = reverse('users:login')
+LOGIN_URL = '/users/login'
