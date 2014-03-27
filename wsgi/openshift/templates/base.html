@@ -14,6 +14,7 @@
 
 	<script src="{% static 'js/jquery-1.10.2.min.js' %}"></script>
 	<script src="{% static 'js/jquery.mobile-1.4.2.min.js' %}"></script>
+	<script src="{% static 'js/custom.js' %}"></script>
 </head>
 
 <body>
@@ -24,40 +25,47 @@
 
 	<div data-role="navbar">
 		<ul>
-		{% if user.is_authenticated %}
+			{% if user.is_authenticated %}
 			<li><a href="" data-ajax="false">{% trans 'Dashboard' %}</a></li>
 			<li><a href="" data-ajax="false">{% trans 'My trips' %}</a></li>
 			<li><a href="{% url 'users:index'%}" data-ajax="false">{% trans 'My profile' %}</a></li>
 			<li><a href="{% url 'users:logout'%}" data-ajax="false">{% trans 'Logout' %} {{ user.username}}</a>
 
-		{% else %}
+			{% else %}
 			<li><a href="{% url 'home'%}" data-ajax="false">{% trans 'Home' %}</a></li>
 			<li><a href="" data-ajax="false">{% trans 'Trips' %}</a></li>
 			<li><a href="{% url 'users:login'%}" data-ajax="false">{% trans 'Login' %}</a></li>
 			<li><a href="{% url 'users:registration'%}" data-ajax="false">{% trans 'Registration' %}</a>
-		{% endif %}
+			{% endif %}
 	    </ul>
 	</div>
 
 	<div data-role="main" class="ui-content">
+		{% if messages %}
+		<div id="messages">
+			{% for message in messages %}
+			<div class="message {{ message.tags }} ui-body ui-body-a">{{ message }}</div>
+			{% endfor %}
+		</div>
+		{% endif %}
+		{% if user.is_authenticated %}
 		<div class="ui-grid-a">
 			<div class="ui-block-a">
+		{% endif %}
 				<div class="ui-body ui-body-a">
 					{% block content %}{% endblock %}
 				</div>
+			{% if user.is_authenticated %}
 	    	</div>
     		<div class="ui-block-b">
 				<div class="ui-body ui-body-a">
-					{% if user.is_authenticated %}
-						<h3>{{ user.username }}</h3>
-						<img src="{{ user.userprofile.avatar.url }}" alt="{{ user.username }} avatar" />
-						<p>{{ user.userprofile.about_me }}</p>
-					{% else %}
-						Anonymous user
-					{% endif %}
+					<h3>{{ user.username }}</h3>
+					<img src="{{ user.userprofile.avatar.url }}" alt="{{ user.username }} avatar" />
+					<p>{{ user.userprofile.about_me }}</p>
 				</div>
 	        </div>
 		</div>
+			{% endif %}
 	</div><!-- /content -->
 
 	<div data-role="footer" data-position="fixed">

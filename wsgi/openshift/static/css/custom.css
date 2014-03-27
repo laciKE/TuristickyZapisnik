@@ -1,0 +1,29 @@
+/* flash messages */
+
+.message {
+	margin-bottom: 1px
+}
+
+#messages .info {
+	background-color: #e6ecf2;
+	border-color: #314e6c;
+	color: #314e6c;
+}
+
+#messages .success {
+	background-color: #defade;
+	border-color: #267726;
+	color: #267726;
+}
+
+#messages .warning {
+	background-color: #ffeebf;
+	border-color: #b87d00;
+	color: #b87d00;
+}
+
+#messages .error {
+	background-color: #ffcccc;
+	border-color: #8f0000;
+	color: #8f0000;
+}

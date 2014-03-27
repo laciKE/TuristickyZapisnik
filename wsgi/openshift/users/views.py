@@ -3,6 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import render, render_to_response
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template.context import RequestContext
 from users.forms import UserForm, UserProfileForm
@@ -51,6 +52,9 @@ def registration(request):
             
             # Update our variable to tell the template registration was successful.
             registered = True
+            messages.success(request, _('Registration successful, you can log in.'))
+            return HttpResponseRedirect(reverse('users:login'))
+ 
 
         # Invalid form or forms - mistakes or something else?
         # Print problems to the terminal.
@@ -90,14 +94,16 @@ def user_login(request):
                 # If the account is valid and active, we can log the user in.
                 # We'll send the user back to the homepage.
                 login(request, user)
+                messages.success(request, _('Welcome, ') + user.username)
                 return HttpResponseRedirect(reverse('users:index'))
             else:
                 # An inactive account was used - no logging in!
-                return HttpResponse(_('Your account has been disabled.'))
+                messages.warning(request, _('Your account has been disabled.'))
+                return render_to_response('users/login.html', {'username': username}, context)
         else:
             # Bad login details were provided. So we can't log the user in.
-            print "Invalid login details: {0}, {1}".format(username, password)
-            return HttpResponse(_('Invalid login details supplied.'))
+            messages.error(request, _('Invalid login details supplied.'))
+            return render_to_response('users/login.html', {'username': username}, context)
 
     # The request is not a HTTP POST, so display the login form.
     # This scenario would most likely be a HTTP GET.
@@ -111,5 +117,7 @@ def user_logout(request):
     # Since we know the user is logged in, we can now just log them out.
     logout(request)
 
+    messages.success(request, _('Logout successful'))
+
     # Take the user back to the homepage.
-    return HttpResponseRedirect(reverse('users:index'))
+    return HttpResponseRedirect(reverse('home'))
