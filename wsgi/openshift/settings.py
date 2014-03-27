@@ -144,7 +144,7 @@ STATICFILES_DIRS = (
 STATIC_URL = '/static/'
 
 if ON_OPENSHIFT:
-	MEDIA_ROOT = os.environ.get('OPENSHIFT_DATA_DIR', '')
+	MEDIA_ROOT = os.path.join(os.environ['OPENSHIFT_DATA_DIR'], 'media')
 else:
 	MEDIA_ROOT = os.path.join(BASE_DIR, '..', 'media')
 
