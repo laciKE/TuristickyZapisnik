@@ -40,12 +40,31 @@
 	</div>
 
 	<div data-role="main" class="ui-content">
-		{% block content %}{% endblock %}
+		<div class="ui-grid-a">
+			<div class="ui-block-a">
+				<div class="ui-body ui-body-a">
+					{% block content %}{% endblock %}
+				</div>
+	    	</div>
+    		<div class="ui-block-b">
+				<div class="ui-body ui-body-a">
+					{% if user.is_authenticated %}
+						<h3>{{ user.username }}</h3>
+						<img src="{{ user.userprofile.avatar.url }}" alt="{{ user.username }} avatar" />
+						<p>{{ user.userprofile.about_me }}</p>
+					{% else %}
+						Anonymous user
+					{% endif %}
+				</div>
+	        </div>
+		</div>
 	</div><!-- /content -->
 
 	<div data-role="footer" data-position="fixed">
 		<h4>{{ the_footer }}</h4>
 	</div><!-- /footer -->
+
+
 </div><!-- /page -->
 </body>
 </html>
