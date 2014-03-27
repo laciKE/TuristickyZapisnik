@@ -1,4 +1,3 @@
-Online systém na zaznamenávanie turistických výletov a ich zdieľanie s pria-
-teľmi.
+Online systém na zaznamenávanie turistických výletov a ich zdieľanie s priateľmi.
 
 Viac info v špecifikácii
