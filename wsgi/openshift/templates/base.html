@@ -26,9 +26,9 @@
 	<div data-role="navbar">
 		<ul>
 			{% if user.is_authenticated %}
-			<li><a href="" data-ajax="false">{% trans 'Dashboard' %}</a></li>
+			<li><a href="{% url 'users:index' %}" data-ajax="false">{% trans 'Dashboard' %}</a></li>
 			<li><a href="" data-ajax="false">{% trans 'My trips' %}</a></li>
-			<li><a href="{% url 'users:index'%}" data-ajax="false">{% trans 'My profile' %}</a></li>
+			<li><a href="{% url 'users:profile' user.username %}" data-ajax="false">{% trans 'My profile' %}</a></li>
 			<li><a href="{% url 'users:logout'%}" data-ajax="false">{% trans 'Logout' %} {{ user.username}}</a>
 
 			{% else %}
@@ -62,6 +62,11 @@
 					<h3>{{ user.username }}</h3>
 					<img src="{{ user.userprofile.avatar.url }}" alt="{{ user.username }} avatar" />
 					<p>{{ user.userprofile.about_me }}</p>
+					<p>
+						<a href="{% url 'users:edit' %}" data-ajax="false" >Edit profile</a><br/>
+						<a href="" data-ajax="false" >Change password</a><br/>
+						<a href="{% url 'users:logout' %}" data-ajax="false">Logout</a>
+</p>
 				</div>
 	        </div>
 		</div>
