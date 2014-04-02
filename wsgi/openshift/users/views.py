@@ -1,7 +1,8 @@
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
-from django.shortcuts import render, render_to_response
+from django.shortcuts import get_object_or_404, render, render_to_response
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponse
@@ -12,6 +13,12 @@ from users.forms import UserForm, UserProfileForm
 def index(request):
 	context = RequestContext(request)
 	return render_to_response('users/index.html', {}, context)
+
+def profile(request, username):
+	print username
+	context = RequestContext(request)
+	user = get_object_or_404(User, username=username)
+	return render_to_response('users/profile.html', {'profile': user}, context)
 
 def registration(request):
     context = RequestContext(request)
