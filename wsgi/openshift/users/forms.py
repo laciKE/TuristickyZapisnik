@@ -9,7 +9,15 @@ class UserForm(forms.ModelForm):
 		model = User
 		fields = ('username', 'email', 'first_name', 'last_name', 'password')
 
+class UserEditForm(forms.ModelForm):
+	class Meta:
+		model = User
+		fields = ('email', 'first_name', 'last_name')
+
 class UserProfileForm(forms.ModelForm):
 	class Meta:
 		model = UserProfile
 		fields = ('about_me', 'avatar')
+		widgets = {
+			'avatar': forms.FileInput(),
+		}
