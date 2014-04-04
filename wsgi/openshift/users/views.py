@@ -4,9 +4,13 @@ from django.shortcuts import get_object_or_404, render, render_to_response
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.debug import sensitive_post_parameters
+from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template.context import RequestContext
+from django.contrib.auth.forms import PasswordChangeForm
 from users.forms import UserForm, UserEditForm, UserProfileForm
 # Create your views here.
 
@@ -20,6 +24,9 @@ def profile(request, username):
 	user = get_object_or_404(User, username=username)
 	return render_to_response('users/profile.html', {'profile': user}, context)
 
+@sensitive_post_parameters()
+@csrf_protect
+@never_cache
 def registration(request):
     context = RequestContext(request)
 
@@ -77,6 +84,9 @@ def registration(request):
     # Render the template depending on the context.
     return render_to_response( 'users/registration.html', {'user_form': user_form, 'profile_form': profile_form, 'registered': registered}, context)
 
+@sensitive_post_parameters()
+@csrf_protect
+@never_cache
 def user_login(request):
     context = RequestContext(request)
 
@@ -178,3 +188,20 @@ def edit(request):
 
     # Render the template depending on the context.
     return render_to_response( 'users/edit.html', {'user_form': user_form, 'profile_form': profile_form}, context)
+
+#from django.contrib.auth.views, modofied post_change_redirect and messages
+@sensitive_post_parameters()
+@csrf_protect
+@login_required
+def password_change(request):
+    context = RequestContext(request)
+
+    if request.method == "POST":
+        form = PasswordChangeForm(user=request.user, data=request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, _('Your password has been changed.'))
+            return HttpResponseRedirect(reverse('users:profile', args=(request.user.username,)))
+    else:
+        form = PasswordChangeForm(user=request.user)
+    return render_to_response( 'users/password_change.html', {'form': form,}, context)
