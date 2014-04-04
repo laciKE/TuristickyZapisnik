@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 import os, Image
 from uuid import uuid4
 
+AVATAR_SIZE = (128, 128)
 #helper function generating random names for avatars
 def path_and_rename(path):
 	def wrapper(instance, filename):
@@ -15,14 +16,13 @@ def path_and_rename(path):
 	return wrapper
 
 def resize_avatar(avatar):
-	avatar_size = (128, 128)
 	img = Image.open(avatar)
 	w, h = img.size
 	if w < h:
-		img = img.crop((0, (h-w)/2, w, h-(h-w)/2))
+		img = img.crop((0, 0, w, w))
 	else:
 		img = img.crop(((w-h)/2, 0, w-(w-h)/2, h)) 
-	img = img.resize(avatar_size, Image.ANTIALIAS)
+	img = img.resize(AVATAR_SIZE, Image.ANTIALIAS)
 	img.save(avatar.path)
 
 

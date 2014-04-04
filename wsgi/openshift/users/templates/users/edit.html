@@ -5,13 +5,10 @@
 
 {% block content %}
 
-<h2>{% trans "Registration" %}</h2>
-        {% if registered %}
-        <strong>thank you for registering!</strong>
-        {% else %}
-        <strong>register here!</strong><br />
+<h2>{% trans "Edit profile for user" %} {{ user.username }}</h2>
+        <strong>Edit here!</strong><br />
 
-        <form id="user_form" method="post" action="{% url 'users:registration' %}"
+        <form id="user_form" method="post" action="{% url 'users:edit' %}"
                 enctype="multipart/form-data" data-ajax="false" >
 
             {% csrf_token %}
@@ -23,8 +20,6 @@
             {{ profile_form.as_p }}
 
             <!-- Provide a button to click to submit the form. -->
-            <input type="submit" name="submit" value="Register" />
+            <input type="submit" name="submit" value="Edit" />
         </form>
-        {% endif %}
-
 {% endblock %}
