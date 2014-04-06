@@ -3,9 +3,9 @@
 {% load i18n %}
 
 {% block content %}
-<h3>{% trans "My groups" %} </h3>
+<h2>{% trans "My groups" %} </h2>
 
-<form id="group_create" method="post" action="{% url 'groups:create' %}">
+<form id="group_create" method="post" action="{% url 'groups:create' %}" data-ajax="false" >
 	{% csrf_token %}
 	<fieldset>
 		<legend>{% trans 'Create group' %}</legend>
@@ -15,11 +15,20 @@
 </form>
 
 {% if groups %}
-<ul data-role="listview" data-filter="true" data-filter-placeholder="{% trans 'Search groups...' %}" data-inset="true" >
+<ul data-role="listview" data-filter="true" data-filter-placeholder="{% trans 'Search groups...' %}" data-inset="true" data-split-icon="delete">
 	{% for group in groups %}
-	<li><a href="">{{ group.name }}</a></li>
+	<li><a href="" title="{% trans 'Edit' %}">{{ group.name }}</a><a href="#delete{{ group.id }}" data-rel="popup" data-position-to="window" data-transition="pop" >{% trans 'Delete' %}</a></li>
 	{% endfor %}
 </ul>
+
+{% for group in groups %}
+<div data-role="popup" id="delete{{ group.id }}" class="ui-content" >
+	<h3>{% trans 'Delete group' %} {{ group.name }}?</h3>
+	<a href="" data-role="button" data-rel="back" data-icon="back" data-inline="true" data-mini="true">{% trans 'Cancel' %}</a>
+	<a href="{% url 'groups:delete' group.id %}" data-role="button" data-icon="delete" data-inline="true" data-mini="true" data-ajax="false" >Delete</a>
+</div>
+{% endfor %}
+
 {% else %}
 <p>{% trans "You have not created any groups yet." %}</p>
 {% endif %}

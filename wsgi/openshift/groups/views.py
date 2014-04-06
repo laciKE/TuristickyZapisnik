@@ -19,7 +19,6 @@ def index(request):
 	user = request.user
 	groups = user.customgroup_set.all()
 	group_form = CustomGroupForm()
-
 	return render_to_response('groups/index.html', {'groups': groups, 'form': group_form}, context)
 
 @login_required
@@ -40,4 +39,21 @@ def create(request):
 	else:
 		group_form = CustomGroupForm()
 
+	return HttpResponseRedirect(reverse('groups:index'))
+
+@login_required
+def delete(request, groupid):
+	context = RequestContext(request)
+	user = request.user
+	try:
+		group = CustomGroup.objects.get(pk=groupid)
+		if group.owner == user:
+			group.delete()
+			messages.info(request, _('Succesfully deleted group ') + group.name)
+		else:
+			messages.error(request, _('You have not permission to delete foreign group.'))
+
+	except CustomGroup.DoesNotExist:
+		messages.error(request, _('You can not delete non-existing group.'))
+	
 	return HttpResponseRedirect(reverse('groups:index'))
