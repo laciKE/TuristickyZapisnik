@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+<h3>{% trans "My groups" %} </h3>
+
+<form id="group_create" method="post" action="{% url 'groups:create' %}">
+	{% csrf_token %}
+	{{ form.as_p }}
+	<input type="submit" value="{% trans 'Create group' %}" />
+</form>
+
+{% if groups %}
+<ul data-role="listview" data-filter="true" data-filter-placeholder="{% trans 'Search groups...' %}" data-inset="true" >
+	{% for group in groups %}
+	<li><a href="">{{ group.name }}</a></li>
+	{% endfor %}
+</ul>
+{% else %}
+<p>{% trans "You have not created any groups yet." %}</p>
+{% endif %}
+
+{% endblock %}
