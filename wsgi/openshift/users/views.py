@@ -61,6 +61,7 @@ def registration(request):
 
             # Now we save the UserProfile and User model instance.
             user.save()
+            profile.user = user
             profile.save()
             
             # Update our variable to tell the template registration was successful.
@@ -166,7 +167,6 @@ def edit(request):
 
             # Now we save the UserProfile and User model instance.
             user.save()
-            profile.user = user
             profile.save()
             
             # Update our variable to tell the template registration was successful.
