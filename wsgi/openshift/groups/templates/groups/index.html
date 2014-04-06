@@ -7,8 +7,11 @@
 
 <form id="group_create" method="post" action="{% url 'groups:create' %}">
 	{% csrf_token %}
-	{{ form.as_p }}
-	<input type="submit" value="{% trans 'Create group' %}" />
+	<fieldset>
+		<legend>{% trans 'Create group' %}</legend>
+		{{ form.as_p }}
+		<input type="submit" value="{% trans 'Create' %}" />
+	</fieldset>
 </form>
 
 {% if groups %}
