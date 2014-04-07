@@ -63,12 +63,12 @@ def edit(request, groupid):
 	user = request.user
 	try:
 		group = CustomGroup.objects.get(pk=groupid)
-		if group.owner == user:
-			messages.info(request, group.name)
-		else:
+		if group.owner != user:
 			messages.error(request, _('You have not permission to edit foreign group.'))
+			return HttpResponseRedirect(reverse('groups:index'))
 	except CustomGroup.DoesNotExist:
-		messages.error(request, _('You can not edit non-existing group.'))
+		messages.error(request, _('You are not allowed to edit non-existing group.'))
+		return HttpResponseRedirect(reverse('groups:index'))
 	
 	return render_to_response('groups/edit.html', {'group': group, 'users': group.users.all(), 'form': None}, context)
 
@@ -82,9 +82,33 @@ def remove_user(request, groupid, userid):
 			deleted_user = group.users.filter(id=userid).first()
 			if deleted_user != None:
 				group.users.remove(deleted_user)
-				messages.error(request, _('Successfully remove user ') + deleted_user.username)
+				messages.info(request, _('Successfully removed user ') + deleted_user.username)
 			else:
 				messages.error(request, _('You can not delete non-this-group user.'))
+		else:
+			messages.error(request, _('You have not permission to edit foreign group.'))
+	except CustomGroup.DoesNotExist:
+		messages.error(request, _('You can not edit non-existing group.'))
+	
+	return HttpResponseRedirect(reverse('groups:edit', args=(groupid,)))
+
+@login_required
+def add_user(request, groupid, userid):
+	context = RequestContext(request)
+	user = request.user
+	try:
+		group = CustomGroup.objects.get(pk=groupid)
+		if group.owner == user:
+			added_user = group.users.filter(id=userid).first()
+			if added_user != None:
+				messages.info(request, _('Already in this group: user ') + added_user.username)
+			else:
+				try:
+					added_user = User.objects.get(pk=userid)
+					group.users.add(added_user)
+					messages.success(request, _('Successfully added user ') + added_user.username)
+				except User.DoesNotExist:
+					messages.error(request, _('You can not add non-existing user.'))
 		else:
 			messages.error(request, _('You have not permission to edit foreign group.'))
 	except CustomGroup.DoesNotExist:

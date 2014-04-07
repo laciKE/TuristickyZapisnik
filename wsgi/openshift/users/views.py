@@ -210,8 +210,8 @@ def password_change(request):
 def search(request):
 	if request.method == "GET" and 'q' in request.GET:
 		q = request.GET['q']
-		users = User.objects.filter(username__contains=q)
-		data = simplejson.dumps([(user.id, user.username) for user in users])
+		users = User.objects.filter(username__contains=q).filter(is_superuser=False)
+		data = simplejson.dumps([(user.id, user.username, user.get_full_name(), user.userprofile.avatar.url) for user in users])
 		return HttpResponse(data, mimetype='application/json')
 	else:
 		return HttpResponseBadRequest()
