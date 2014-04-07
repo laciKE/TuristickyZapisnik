@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+<h2>{% trans "Edit group" %} {{ group.name }}</h2>
+
+<form id="user_add" method="post" action="{% url 'groups:edit' group.id %}" data-ajax="false" >
+	{% csrf_token %}
+	<fieldset>
+		<legend>{% trans 'Add user' %}</legend>
+		{{ form }}
+		<input type="submit" value="{% trans 'Add' %}" />
+	</fieldset>
+</form>
+
+{% if users %}
+<ul data-role="listview" data-filter="true" data-filter-placeholder="{% trans 'Search users in this group...' %}" data-inset="true" data-split-icon="delete">
+	{% for user in users %}
+	<li><a href="" >{{ user.username }}</a><a href="#remove{{ user.id }}" data-rel="popup" data-position-to="window" data-transition="pop" >{% trans 'Remove' %}</a></li>
+	{% endfor %}
+</ul>
+
+{% for user in users %}
+<div data-role="popup" id="remove{{ user.id }}" class="ui-content" >
+	<h3>{% trans 'Remove user' %} {{ user.name }}?</h3>
+	<a href="" data-role="button" data-rel="back" data-icon="back" data-inline="true" data-mini="true">{% trans 'Cancel' %}</a>
+	<a href="{% url 'groups:remove_user' group.id user.id %}" data-role="button" data-icon="delete" data-inline="true" data-mini="true" data-ajax="false" >Remove</a>
+</div>
+{% endfor %}
+
+{% else %}
+<p>{% trans "You have not added any users to this group yet." %}</p>
+{% endif %}
+
+{% endblock %}

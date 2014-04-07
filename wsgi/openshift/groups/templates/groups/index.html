@@ -17,7 +17,7 @@
 {% if groups %}
 <ul data-role="listview" data-filter="true" data-filter-placeholder="{% trans 'Search groups...' %}" data-inset="true" data-split-icon="delete">
 	{% for group in groups %}
-	<li><a href="" title="{% trans 'Edit' %}">{{ group.name }}</a><a href="#delete{{ group.id }}" data-rel="popup" data-position-to="window" data-transition="pop" >{% trans 'Delete' %}</a></li>
+	<li><a href="{% url 'groups:edit' group.id %}" title="{% trans 'Edit' %}">{{ group.name }}</a><a href="#delete{{ group.id }}" data-rel="popup" data-position-to="window" data-transition="pop" >{% trans 'Delete' %}</a></li>
 	{% endfor %}
 </ul>
 
