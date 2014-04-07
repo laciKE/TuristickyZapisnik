@@ -1,4 +1,5 @@
 from django.core.urlresolvers import reverse
+from django.utils import simplejson
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import get_object_or_404, render, render_to_response
 from django.contrib.auth import authenticate, login, logout
@@ -8,7 +9,7 @@ from django.views.decorators.debug import sensitive_post_parameters
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseBadRequest, Http404
 from django.template.context import RequestContext
 from django.contrib.auth.forms import PasswordChangeForm
 from users.forms import UserForm, UserEditForm, UserProfileForm
@@ -205,3 +206,12 @@ def password_change(request):
     else:
         form = PasswordChangeForm(user=request.user)
     return render_to_response( 'users/password_change.html', {'form': form,}, context)
+
+def search(request):
+	if request.method == "GET" and 'q' in request.GET:
+		q = request.GET['q']
+		users = User.objects.filter(username__contains=q)
+		data = simplejson.dumps([(user.id, user.username) for user in users])
+		return HttpResponse(data, mimetype='application/json')
+	else:
+		return HttpResponseBadRequest()
