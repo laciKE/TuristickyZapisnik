@@ -41,10 +41,11 @@ class Trip(models.Model):
 			raise ValidationError(_('Trip must ends after it begins'))
 
 	def validate_unique_title_owner(self):        
-		if not self.id:
-			qs = Trip.objects.filter(title=self.title)
-			if qs.filter(owner=self.owner).exists():
-				raise ValidationError(_('Trip title must be unique per user'))
+		qs = Trip.objects.filter(title=self.title)
+		if self.id:
+			qs = qs.exclude(id=self.id)
+		if qs.filter(owner=self.owner).exists():
+			raise ValidationError(_('Trip title must be unique per user'))
 
 	def save(self):
 		self.validate_trip_begin_end()

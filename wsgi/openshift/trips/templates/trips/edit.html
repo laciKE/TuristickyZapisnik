@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+<h2>{% trans "Edit trip " %}{{ trip.title }}</h2>
+
+<form id="trip_edit" method="post" action="{% url 'trips:edit' trip.id %}" enctype="multipart/form-data" data-ajax="false" >
+	{% csrf_token %}
+	{{ form.as_p }}
+	<input type="submit" data-icon="edit" value="{% trans 'Edit trip' %}" />
+</form>
+
+<div data-role="controlgroup" data-type="horizontal">
+	<a href="" class="ui-btn ui-corner-all ui-shadow ui-icon-camera ui-btn-icon-left">{% trans 'Photos' %}</a>
+	<a href="" class="ui-btn ui-corner-all ui-shadow ui-icon-user ui-btn-icon-left">{% trans 'Share trip' %}</a>
+	<a href="{% url 'trips:delete' trip.id %}" class="ui-btn ui-corner-all ui-shadow ui-icon-delete ui-btn-icon-left">{% trans 'Delete trip' %}</a>
+</div>
+
+{% endblock %}

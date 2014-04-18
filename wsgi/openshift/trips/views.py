@@ -26,8 +26,6 @@ def create(request):
 	context = RequestContext(request)
 	if request.method == 'POST':
 		trip_form = TripForm(data=request.POST)
-		print trip_form
-		print request.POST
 		if trip_form.is_valid():
 			trip = trip_form.save(commit=False)
 			user = request.user
@@ -36,8 +34,6 @@ def create(request):
 				trip.gpx_log = request.FILES['gpx_log']
 			try:
 				trip.save()
-				print trip.trip_end, trip.trip_begin
-	
 				messages.success(request, _('Successfully created trip ') + trip.title)
 				return HttpResponseRedirect(reverse('trips:index'))
 			except ValidationError, e:
@@ -79,8 +75,24 @@ def edit(request, tripid):
 		if trip.owner != user:
 			messages.error(request, _('You have not permission to edit foreign trip.'))
 			return HttpResponseRedirect(reverse('trips:index'))
+		if request.method == 'POST':
+			trip_form = TripForm(data=request.POST, instance=trip)
+			if trip_form.is_valid():
+				trip = trip_form.save(commit=False)
+				if 'gpx_log' in request.FILES:
+					trip.gpx_log = request.FILES['gpx_log']
+				try:
+					trip.save()
+					messages.success(request, _('Successfully edited trip ') + trip.title)
+					trip_form = TripForm(instance=trip) #for refreshing gpx log
+				except ValidationError, e:
+					messages.error(request, e.message)
+			else:
+				messages.error(request, trip_form.errors)
+		else:
+			trip_form = TripForm(instance=trip)
 	except Trip.DoesNotExist:
 		messages.error(request, _('You are not allowed to edit non-existing group.'))
 		return HttpResponseRedirect(reverse('trips:index'))
 	
-	return render_to_response('trips/edit.html', {'trip': trip, 'form': None}, context)
+	return render_to_response('trips/edit.html', {'trip': trip, 'form': trip_form}, context)
