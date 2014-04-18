@@ -2,9 +2,10 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
-from groups.models import CustomGroup
 import os
 from uuid import uuid4
+from datetime import datetime
+from groups.models import CustomGroup
 
 #helper function generating random names for avatars
 def path_and_rename(path):
@@ -35,13 +36,18 @@ class Trip(models.Model):
         blank=True, help_text=_('The groupss sharing this trip.'),
         related_name="shared_trips", related_query_name="trips")
 
+	def validate_trip_begin_end(self):        
+		if self.trip_begin > self.trip_end:
+			raise ValidationError(_('Trip must ends after it begins'))
 
 	def validate_unique_title_owner(self):        
-		qs = Trip.objects.filter(title=self.title)
-		if qs.filter(owner=self.owner).exists():
-			raise ValidationError(_('Trip title must be unique per user'))
+		if not self.id:
+			qs = Trip.objects.filter(title=self.title)
+			if qs.filter(owner=self.owner).exists():
+				raise ValidationError(_('Trip title must be unique per user'))
 
 	def save(self):
+		self.validate_trip_begin_end()
 		self.validate_unique_title_owner()
 		super(Trip, self).save()
 
