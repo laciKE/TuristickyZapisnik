@@ -58,7 +58,7 @@ def delete(request, tripid):
 		trip = Trip.objects.get(pk=tripid)
 		if trip.owner == user:
 			trip.delete()
-			messages.info(request, _('Succesfully deleted trip ') + trip.name)
+			messages.info(request, _('Succesfully deleted trip ') + trip.title)
 		else:
 			messages.error(request, _('You have not permission to delete foreign trip.'))
 	except Trip.DoesNotExist:
@@ -87,6 +87,7 @@ def edit(request, tripid):
 					trip_form = TripForm(instance=trip) #for refreshing gpx log
 				except ValidationError, e:
 					messages.error(request, e.message)
+					trip = Trip.objects.get(pk=tripid)
 			else:
 				messages.error(request, trip_form.errors)
 		else:

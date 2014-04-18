@@ -14,7 +14,12 @@
 <div data-role="controlgroup" data-type="horizontal">
 	<a href="" class="ui-btn ui-corner-all ui-shadow ui-icon-camera ui-btn-icon-left">{% trans 'Photos' %}</a>
 	<a href="" class="ui-btn ui-corner-all ui-shadow ui-icon-user ui-btn-icon-left">{% trans 'Share trip' %}</a>
-	<a href="{% url 'trips:delete' trip.id %}" class="ui-btn ui-corner-all ui-shadow ui-icon-delete ui-btn-icon-left">{% trans 'Delete trip' %}</a>
+	<a href="#delete" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-corner-all ui-shadow ui-icon-delete ui-btn-icon-left">{% trans 'Delete trip' %}</a>
 </div>
 
+<div data-role="popup" id="delete" class="ui-content" >
+	<h3>{% trans 'Delete trip' %} {{ trip.name }}?</h3>
+	<a href="" data-role="button" data-rel="back" data-icon="back" data-inline="true" data-mini="true">{% trans 'Cancel' %}</a>
+	<a href="{% url 'trips:delete' trip.id %}" data-role="button" data-icon="delete" data-inline="true" data-mini="true" data-ajax="false" >Delete</a>
+</div>
 {% endblock %}
