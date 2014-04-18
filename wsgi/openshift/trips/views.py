@@ -45,8 +45,19 @@ def create(request):
 
 	return render_to_response('trips/create.html', {'form': trip_form}, context)
 
-@login_required
 def view(request, tripid):
+	context = RequestContext(request)
+	user = request.user
+	try:
+		trip = Trip.objects.get(pk=tripid)
+		if trip.owner == user:
+		#TODO or trip is shared with user
+			return render_to_response('trips/view.html', {'trip': trip}, context)
+		else:
+			messages.error(request, _('You are not allowed to view this trip.'))
+	except Trip.DoesNotExist:
+		messages.error(request, _('You can not view non-existing trip.'))
+	
 	return HttpResponseRedirect(reverse('home'))
 
 
