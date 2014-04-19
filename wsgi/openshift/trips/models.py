@@ -27,6 +27,9 @@ class Trip(models.Model):
 	description = models.TextField(_('description'), blank=True)
 	gpx_log = models.FileField(upload_to=path_and_rename('gpx'), blank=True)
 	
+	created = models.DateTimeField(auto_now_add=True)
+	modified = models.DateTimeField(auto_now=True)
+
 	#sharing options
 	public = models.BooleanField(_('public trip'), default=False, help_text=_('If checked, everyone can view this trip regardless of sharing with users and/or groups'))
 	share_users = models.ManyToManyField(User, verbose_name=_('share with users'),
