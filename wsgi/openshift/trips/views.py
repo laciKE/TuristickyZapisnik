@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template.context import RequestContext
+from groups.models import CustomGroup
 from trips.models import Trip
 from trips.forms import TripForm
 
@@ -110,3 +111,106 @@ def edit(request, tripid):
 		return HttpResponseRedirect(reverse('trips:index'))
 	
 	return render_to_response('trips/edit.html', {'trip': trip, 'form': trip_form}, context)
+
+@login_required
+def share(request, tripid):
+	context = RequestContext(request)
+	user = request.user
+	try:
+		trip = Trip.objects.get(pk=tripid)
+		if trip.owner != user:
+			messages.error(request, _('You have not permission to share foreign trip.'))
+			return HttpResponseRedirect(reverse('trips:index'))
+	except Trip.DoesNotExist:
+		messages.error(request, _('You are not allowed to share non-existing trip.'))
+		return HttpResponseRedirect(reverse('trips:index'))
+	
+	return render_to_response('trips/share.html', {'trip': trip, 'users': trip.share_users.all(), 'groups': trip.share_groups.all(), 'user_groups': user.customgroup_set.all()}, context)
+
+@login_required
+def remove_user(request, tripid, userid):
+	context = RequestContext(request)
+	user = request.user
+	try:
+		trip = Trip.objects.get(pk=tripid)
+		if trip.owner == user:
+			deleted_user = trip.share_users.filter(id=userid).first()
+			if deleted_user != None:
+				trip.share_users.remove(deleted_user)
+				messages.info(request, _('Successfully unshared with user ') + deleted_user.username)
+			else:
+				messages.error(request, _('You can not unshare trip with requested user.'))
+		else:
+			messages.error(request, _('You have not permission to share foreign trip.'))
+	except Trip.DoesNotExist:
+		messages.error(request, _('You can not share non-existing trip.'))
+	
+	return HttpResponseRedirect(reverse('trips:share', args=(tripid,)))
+
+@login_required
+def add_user(request, tripid, userid):
+	context = RequestContext(request)
+	user = request.user
+	try:
+		trip = Trip.objects.get(pk=tripid)
+		if trip.owner == user:
+			added_user = trip.share_users.filter(id=userid).first()
+			if added_user != None:
+				messages.info(request, _('This trip is already shared with user ') + added_user.username)
+			else:
+				try:
+					added_user = User.objects.get(pk=userid)
+					trip.share_users.add(added_user)
+					messages.success(request, _('Successfully shared with user ') + added_user.username)
+				except User.DoesNotExist:
+					messages.error(request, _('You can not shared with non-existing user.'))
+		else:
+			messages.error(request, _('You have not permission to share foreign trip.'))
+	except Trip.DoesNotExist:
+		messages.error(request, _('You can not edit non-existing trip.'))
+	
+	return HttpResponseRedirect(reverse('trips:share', args=(tripid,)))
+
+@login_required
+def remove_group(request, tripid, groupid):
+	context = RequestContext(request)
+	user = request.user
+	try:
+		trip = Trip.objects.get(pk=tripid)
+		if trip.owner == user:
+			deleted_group = trip.share_groups.filter(id=groupid).first()
+			if deleted_group != None:
+				trip.share_groups.remove(deleted_group)
+				messages.info(request, _('Successfully unshared with group ') + deleted_group.name)
+			else:
+				messages.error(request, _('You can not unshare trip with requested group.'))
+		else:
+			messages.error(request, _('You have not permission to share foreign trip.'))
+	except Trip.DoesNotExist:
+		messages.error(request, _('You can not share non-existing trip.'))
+	
+	return HttpResponseRedirect(reverse('trips:share', args=(tripid,)))
+
+@login_required
+def add_group(request, tripid, groupid):
+	context = RequestContext(request)
+	user = request.user
+	try:
+		trip = Trip.objects.get(pk=tripid)
+		if trip.owner == user:
+			added_group = trip.share_groups.filter(id=groupid).first()
+			if added_group != None:
+				messages.info(request, _('This trip is already shared with group ') + added_group.name)
+			else:
+				try:
+					added_group = CustomGroup.objects.get(pk=groupid)
+					trip.share_groups.add(added_group)
+					messages.success(request, _('Successfully shared with group ') + added_group.name)
+				except CustomGroup.DoesNotExist:
+					messages.error(request, _('You can not shared with non-existing group.'))
+		else:
+			messages.error(request, _('You have not permission to share foreign trip.'))
+	except Trip.DoesNotExist:
+		messages.error(request, _('You can not edit non-existing trip.'))
+	
+	return HttpResponseRedirect(reverse('trips:share', args=(tripid,)))
