@@ -11,7 +11,8 @@
 {% block content %}
 <h2>{% trans "Trip" %} {{ trip.title }}</h2>
 <p>
-Created: {{ trip.created }}, last change: {{ trip.modified }}<br/> 
+Created: {{ trip.created }}, last change: {{ trip.modified }}<br/>
+Public trip: {% if trip.public %}{% trans "yes" %}{% else %}{% trans "no" %}{% endif %}<br/>
 {% if trip.owner == user %}
 	<a href="{% url 'trips:edit' trip.id %}" data-ajax="false" >Edit trip</a>
 {% else %}

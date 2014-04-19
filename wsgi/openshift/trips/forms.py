@@ -4,7 +4,7 @@ from trips.models import Trip
 class TripForm(forms.ModelForm):
 	class Meta:
 		model = Trip
-		fields = ('title', 'trip_begin', 'trip_end', 'description', 'gpx_log')
+		fields = ('title', 'trip_begin', 'trip_end', 'description', 'gpx_log', 'public')
 
 	def __init__(self, *args, **kwargs):
 		super(TripForm, self).__init__(*args, **kwargs)
