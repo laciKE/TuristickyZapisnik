@@ -17,7 +17,7 @@ from trips.forms import TripForm
 def index(request):
 	context = RequestContext(request)
 	user = request.user
-	trips = user.trip_set.all()
+	trips = user.trip_set.all().order_by('-id')
 	trip_form = TripForm()
 	return render_to_response('trips/index.html', {'trips': trips, 'form': trip_form}, context)
 

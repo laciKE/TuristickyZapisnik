@@ -10,7 +10,7 @@
 {% if trips %}
 <ul data-role="listview" data-filter="true" data-filter-placeholder="{% trans 'Search trips...' %}" data-inset="true" data-split-icon="edit">
 	{% for trip in trips %}
-	<li><a href="{% url 'trips:view' trip.id %}" data-ajax="false" >{{ trip.title }}</a><a href="{% url 'trips:edit' trip.id %}" data-ajax="false" >{% trans 'Edit' %}</a></li>
+	<li><a href="{% url 'trips:view' trip.id %}" data-ajax="false" ><h3>{{ trip.title }}</h3><p>{{ trip.description|slice:"0:80" }}</p></a><a href="{% url 'trips:edit' trip.id %}" data-ajax="false" >{% trans 'Edit' %}</a></li>
 	{% endfor %}
 </ul>
 
