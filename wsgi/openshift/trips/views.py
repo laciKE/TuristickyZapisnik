@@ -95,7 +95,9 @@ def edit(request, tripid):
 				try:
 					trip.save()
 					messages.success(request, _('Successfully edited trip ') + trip.title)
-					trip_form = TripForm(instance=trip) #for refreshing gpx log
+					#trip_form = TripForm(instance=trip) #for refreshing gpx log
+					return HttpResponseRedirect(reverse('trips:view', args=(tripid,)))
+	
 				except ValidationError, e:
 					messages.error(request, e.message)
 					trip = Trip.objects.get(pk=tripid)
