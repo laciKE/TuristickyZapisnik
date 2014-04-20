@@ -22,6 +22,11 @@ def index(request):
 	trip_form = TripForm()
 	return render_to_response('trips/index.html', {'trips': trips, 'form': trip_form}, context)
 
+def public(request):
+	context = RequestContext(request)
+	trips = Trip.objects.filter(public=True).order_by('-id')
+	return render_to_response('trips/public.html', {'trips': trips}, context)
+
 @login_required
 def create(request):
 	context = RequestContext(request)

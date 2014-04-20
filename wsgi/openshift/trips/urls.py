@@ -4,6 +4,7 @@ from trips import views
 
 urlpatterns = patterns('',
 	url(r'^$', views.index, name='index'),
+	url(r'^public/$', views.public, name='public'),
 	url(r'^create/$', views.create, name='create'),
 	url(r'^view/(?P<tripid>\d+)$', views.view, name='view'),
 	url(r'^delete/(?P<tripid>\d+)$', views.delete, name='delete'),
@@ -13,5 +14,4 @@ urlpatterns = patterns('',
 	url(r'^share/(?P<tripid>\d+)/add/(?P<userid>\d+)/$', views.add_user, name='add_user'),	
 	url(r'^share/(?P<tripid>\d+)/removegroup/(?P<groupid>\d+)/$', views.remove_group, name='remove_group'),
 	url(r'^share/(?P<tripid>\d+)/addgroup/(?P<groupid>\d+)/$', views.add_group, name='add_group'),	
-
 )

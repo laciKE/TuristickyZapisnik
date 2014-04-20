@@ -38,7 +38,7 @@
 
 			{% else %}
 			<li><a href="{% url 'home'%}" data-ajax="false">{% trans 'Home' %}</a></li>
-			<li><a href="" data-ajax="false">{% trans 'Trips' %}</a></li>
+			<li><a href="{% url 'trips:public' %}" data-ajax="false">{% trans 'Public trips' %}</a></li>
 			<li><a href="{% url 'users:login'%}" data-ajax="false">{% trans 'Login' %}</a></li>
 			<li><a href="{% url 'users:registration'%}" data-ajax="false">{% trans 'Registration' %}</a>
 			{% endif %}
