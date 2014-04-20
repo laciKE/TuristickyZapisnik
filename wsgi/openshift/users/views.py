@@ -13,7 +13,7 @@ from django.http import HttpResponseRedirect, HttpResponse, HttpResponseBadReque
 from django.template.context import RequestContext
 from django.contrib.auth.forms import PasswordChangeForm
 from users.forms import UserForm, UserEditForm, UserProfileForm
-# Create your views here.
+from trips.models import Trip
 
 def index(request):
 	context = RequestContext(request)
@@ -23,7 +23,8 @@ def profile(request, username):
 	print username
 	context = RequestContext(request)
 	user = get_object_or_404(User, username=username)
-	return render_to_response('users/profile.html', {'profile': user}, context)
+	trips = user.trip_set.filter(public=True).order_by('-id')
+	return render_to_response('users/profile.html', {'profile': user, 'trips': trips}, context)
 
 @sensitive_post_parameters()
 @csrf_protect
