@@ -14,5 +14,5 @@ def home(request):
 def dashboard(request):
 	context = RequestContext(request)
 	user = request.user
-	trips = Trip.objects.filter(Q(share_users=user) | Q(share_groups__in=user.custom_groups.all()))
+	trips = Trip.objects.filter(Q(share_users=user) | Q(share_groups__in=user.custom_groups.all())).distinct().order_by('-modified')
 	return render_to_response('dashboard.html', {'trips': trips}, context)
