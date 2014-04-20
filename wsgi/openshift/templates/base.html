@@ -31,7 +31,7 @@
 	<div data-role="navbar">
 		<ul>
 			{% if user.is_authenticated %}
-			<li><a href="{% url 'users:index' %}" data-ajax="false">{% trans 'Dashboard' %}</a></li>
+			<li><a href="{% url 'dashboard' %}" data-ajax="false">{% trans 'Dashboard' %}</a></li>
 			<li><a href="{% url 'trips:index' %}" data-ajax="false">{% trans 'My trips' %}</a></li>
 			<li><a href="{% url 'groups:index' %}" data-ajax="false">{% trans 'My groups' %}</a></li>
 			<li><a href="{% url 'users:logout'%}" data-ajax="false">{% trans 'Logout' %} {{ user.username}}</a>
