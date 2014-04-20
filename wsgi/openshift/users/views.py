@@ -113,7 +113,7 @@ def user_login(request):
                 # We'll send the user back to the homepage.
                 login(request, user)
                 messages.success(request, _('Welcome, ') + user.username)
-                return HttpResponseRedirect(reverse('users:index'))
+                return HttpResponseRedirect(reverse('dashboard'))
             else:
                 # An inactive account was used - no logging in!
                 messages.warning(request, _('Your account has been disabled.'))

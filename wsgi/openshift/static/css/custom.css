@@ -1,5 +1,19 @@
 /* flash messages */
 
+.two-column>.ui-block-a {
+	width: 62.5%;
+}
+
+.two-column>.ui-block-b {
+	width: 37.5%;
+}
+
+#password_change_form, #login_form, #user_form {
+	max-width: 480px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
 .message {
 	margin-bottom: 1px
 }
@@ -29,6 +43,12 @@
 }
 
 #map {
+	width: 100%;
+	height: 360px;
+}
+
+#elevation_profile {
+	padding-top: 1ex;
 	width: 100%;
 	height: 360px;
 }

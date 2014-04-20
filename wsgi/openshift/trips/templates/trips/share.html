@@ -14,13 +14,13 @@
 <ul data-role="listview" data-inset="true" data-split-icon="delete">
 	<li data-role="list-divider">Trip shared with users:</li>
 	{% for user in users %}
-	<li><a href="" ><img src="{{ user.userprofile.avatar.url }}" alt="{{ user.username }}" /><h3>{{ user.username }}</h3><p>{{ user.get_full_name }}</p></a><a href="#remove{{ user.id }}" data-rel="popup" data-position-to="window" data-transition="pop" >{% trans 'Remove' %}</a></li>
+	<li><a href="{% url 'users:profile' user.username %}" ><img src="{{ user.userprofile.avatar.url }}" alt="{{ user.username }}" /><h3>{{ user.username }}</h3><p>{{ user.get_full_name }}</p></a><a href="#remove{{ user.id }}" data-rel="popup" data-position-to="window" data-transition="pop" >{% trans 'Remove' %}</a></li>
 	{% endfor %}
 </ul>
 
 <ul id="group_add" data-role="listview" data-inset="true" data-filter="true"data-filter-reveal="true" data-filter-placeholder="{% trans 'Search group for sharing this trip...' %}" data-split-icon="plus" >
 	{% for group in user_groups %}
-	<li><a href="" ><h3>{{ group.name }}</h3></a><a href="{% url 'trips:add_group' trip.id group.id %}" data-ajax="false" >{% trans 'Add' %}</a></li>
+	<li><a href="{% url 'groups:edit' group.id %}" data-ajax="false" ><h3>{{ group.name }}</h3></a><a href="{% url 'trips:add_group' trip.id group.id %}" data-ajax="false" >{% trans 'Add' %}</a></li>
 	{% endfor %}
 
 </ul>
@@ -28,7 +28,7 @@
 <ul data-role="listview" data-inset="true" data-split-icon="delete">
 	<li data-role="list-divider">Trip shared with groups:</li>
 	{% for group in groups %}
-	<li><a href="" ><h3>{{ group.name }}</h3></a><a href="#removegroup{{ group.id }}" data-rel="popup" data-position-to="window" data-transition="pop" >{% trans 'Remove' %}</a></li>
+	<li><a href="{% url 'groups:edit' group.id %}" data-ajax="false" ><h3>{{ group.name }}</h3></a><a href="#removegroup{{ group.id }}" data-rel="popup" data-position-to="window" data-transition="pop" >{% trans 'Remove' %}</a></li>
 	{% endfor %}
 </ul>
 
