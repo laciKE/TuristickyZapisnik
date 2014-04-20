@@ -20,7 +20,9 @@ Public trip: {% if trip.public %}{% trans "yes" %}{% else %}{% trans "no" %}{% e
 {% endif %}
 </p>
 <p>{{ trip.trip_begin }} - {{ trip.trip_end }}</p>
-<p>{{ trip.description }}</p>
+<div class="description">
+	{{ trip.description|linebreaks }}
+</div>
 
 {% if trip.gpx_log %}
 	<h3>{% trans 'Trip stats' %}</h3>
