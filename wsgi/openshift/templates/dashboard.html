@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+<h2>{% trans "Dashboard" %} </h2>
+
+<h3>{% trans "Personal stats" %}</h3>
+<p>TODO</p>
+
+<h3>{% trans "Trips shared with me" %}</h3>
+<span>View all <a href="{% url 'trips:public' %}">public trips.</a></span>
+
+{% if trips %}
+<ul data-role="listview" data-filter="true" data-filter-placeholder="{% trans 'Search trips...' %}" data-inset="true">
+	{% for trip in trips %}
+	<li>
+		<a href="{% url 'trips:view' trip.id %}" data-ajax="false" >
+			<h3>{{ trip.title }}</h3>
+			<p><strong>{{ trip.description|slice:"0:80" }}</strong></p>
+			<p>{% trans 'Created: '%}{{ trip.created }}, {% trans 'last change: '%}{{ trip.modified }}</p>
+		</a>
+		<p class="ui-li-aside"><a href="{% url 'users:profile' trip.owner.username %}">{{ trip.owner.username }}</a></p>
+	</li>
+	{% endfor %}
+</ul>
+
+{% else %}
+<p>{% trans "Users have not shared any trip with you yet." %}</p>
+{% endif %}
+
+{% endblock %}

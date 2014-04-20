@@ -18,7 +18,7 @@ $(document ).on('pageinit', function() {
             })
             .then(function(response) {
                 $.each(response, function(i, user) {
-                    html += '<li><a href=""><img src="' + user[3] + '" alt="' + user[1]+ '" /><h3>' + user[1] + '</h3><p>' + user[2] + '</p></a><a href="add/' + user[0] + '/" data-ajax="false">Add</a></li>';
+                    html += '<li><a href="/users/profile/' + user[1] + '"><img src="' + user[3] + '" alt="' + user[1]+ '" /><h3>' + user[1] + '</h3><p>' + user[2] + '</p></a><a href="add/' + user[0] + '/" data-ajax="false">Add</a></li>';
                 });
                 $ul.html(html);
                 $ul.listview('refresh');

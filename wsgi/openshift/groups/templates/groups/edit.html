@@ -6,17 +6,6 @@
 {% block content %}
 <h2>{% trans "Edit group" %} {{ group.name }}</h2>
 
-<!--
-<form id="user_add" method="post" action="{% url 'groups:edit' group.id %}" data-ajax="false" >
-	{% csrf_token %}
-	<fieldset>
-		<legend>{% trans 'Add user' %}</legend>
-		{{ form }}
-		<input type="submit" value="{% trans 'Add' %}" />
-	</fieldset>
-</form>
--->
-
 <script src="{% static 'js/user_add_autocomplete.js' %}"></script>
 
 <ul id="user_add" data-role="listview" data-inset="true" data-filter="true" data-filter-placeholder="{% trans 'Search user for add to this group...' %}" data-split-icon="plus" >
@@ -25,7 +14,7 @@
 {% if users %}
 <ul data-role="listview" data-filter="true" data-filter-placeholder="{% trans 'Search users in this group...' %}" data-inset="true" data-split-icon="delete">
 	{% for user in users %}
-	<li><a href="" ><img src="{{ user.userprofile.avatar.url }}" alt="{{ user.username }}" /><h3>{{ user.username }}</h3><p>{{ user.get_full_name }}</p></a><a href="#remove{{ user.id }}" data-rel="popup" data-position-to="window" data-transition="pop" >{% trans 'Remove' %}</a></li>
+	<li><a href="{% url 'users:profile' user.username %}" ><img src="{{ user.userprofile.avatar.url }}" alt="{{ user.username }}" /><h3>{{ user.username }}</h3><p>{{ user.get_full_name }}</p></a><a href="#remove{{ user.id }}" data-rel="popup" data-position-to="window" data-transition="pop" >{% trans 'Remove' %}</a></li>
 	{% endfor %}
 </ul>
 

@@ -31,9 +31,9 @@
 	<div data-role="navbar">
 		<ul>
 			{% if user.is_authenticated %}
-			<li><a href="{% url 'users:index' %}" data-ajax="false">{% trans 'Dashboard' %}</a></li>
+			<li><a href="{% url 'dashboard' %}" data-ajax="false">{% trans 'Dashboard' %}</a></li>
 			<li><a href="{% url 'trips:index' %}" data-ajax="false">{% trans 'My trips' %}</a></li>
-			<li><a href="{% url 'users:profile' user.username %}" data-ajax="false">{% trans 'My profile' %}</a></li>
+			<li><a href="{% url 'groups:index' %}" data-ajax="false">{% trans 'My groups' %}</a></li>
 			<li><a href="{% url 'users:logout'%}" data-ajax="false">{% trans 'Logout' %} {{ user.username}}</a>
 
 			{% else %}
@@ -65,12 +65,11 @@
     		<div class="ui-block-b">
 				<div class="ui-body ui-body-a">
 					<h3>{{ user.username }}</h3>
-					<img src="{{ user.userprofile.avatar.url }}" alt="{{ user.username }} avatar" />
+					<a href="{% url 'users:profile' user.username %}"><img src="{{ user.userprofile.avatar.url }}" alt="{{ user.username }} avatar" /></a>
 					<p>{{ user.userprofile.about_me }}</p>
 					<p>
 						<a href="{% url 'users:edit' %}" data-ajax="false" >Edit profile</a><br/>
 						<a href="{% url 'users:password_change' %}" data-ajax="false" >Change password</a><br/>
-						<a href="{% url 'groups:index' %}" data-ajax="false" >My groups</a><br/>
 
 						<a href="{% url 'users:logout' %}" data-ajax="false">Logout</a>
 </p>
