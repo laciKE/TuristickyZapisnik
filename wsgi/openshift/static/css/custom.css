@@ -1,5 +1,3 @@
-/* flash messages */
-
 .two-column>.ui-block-a {
 	width: 62.5%;
 }
@@ -8,11 +6,17 @@
 	width: 37.5%;
 }
 
+.description {
+	text-align: justify;
+}
+
 #password_change_form, #login_form, #user_form {
 	max-width: 480px;
 	margin-left: auto;
 	margin-right: auto;
 }
+
+/* flash messages */
 
 .message {
 	margin-bottom: 1px
