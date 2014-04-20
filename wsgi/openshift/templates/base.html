@@ -25,7 +25,7 @@
 <body>
 <div data-role="page" data-quicklinks="true" data-url="{{ request.get_full_path }}">
 	<div data-role="header">
-		<h1>{% block header %}{{ the_title }}{% endblock %}</h1>
+		<h1>{% block header %}{{ the_title }}<sub>beta</sub>{% endblock %}</h1>
 	</div><!-- /header -->
 
 	<div data-role="navbar">
@@ -54,15 +54,15 @@
 		</div>
 		{% endif %}
 		{% if user.is_authenticated %}
-		<div class="ui-grid-a">
+		<div class="ui-grid-a two-column">
 			<div class="ui-block-a">
 		{% endif %}
 				<div class="ui-body ui-body-a">
 					{% block content %}{% endblock %}
 				</div>
 			{% if user.is_authenticated %}
-	    	</div>
-    		<div class="ui-block-b">
+			</div>
+			<div class="ui-block-b">
 				<div class="ui-body ui-body-a">
 					<h3>{{ user.username }}</h3>
 					<a href="{% url 'users:profile' user.username %}"><img src="{{ user.userprofile.avatar.url }}" alt="{{ user.username }} avatar" /></a>
