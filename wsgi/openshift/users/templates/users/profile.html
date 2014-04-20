@@ -8,7 +8,7 @@
 	<tr><th>{% trans 'Last login' %}:</th><td>{{ profile.last_login }}</td></tr>
 	<tr><th>{% trans 'Member since' %}:</th><td>{{ profile.date_joined }}</td></tr>
 	<tr><th>{% trans 'Name' %}:</th><td>{{ profile.first_name }} {{ profile.last_name}}</td></tr>
-	<tr><th>{% trans 'About me' %}:</th><td>{{ profile.userprofile.about_me }}</td></tr>
+	<tr><th>{% trans 'About me' %}:</th><td class="description">{{ profile.userprofile.about_me|linebreaks }}</td></tr>
 </table>
 
 <h3>Public trips</h3>

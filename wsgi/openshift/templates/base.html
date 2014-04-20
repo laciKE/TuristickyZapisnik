@@ -66,7 +66,9 @@
 				<div class="ui-body ui-body-a">
 					<h3>{{ user.username }}</h3>
 					<a href="{% url 'users:profile' user.username %}"><img src="{{ user.userprofile.avatar.url }}" alt="{{ user.username }} avatar" /></a>
-					<p>{{ user.userprofile.about_me }}</p>
+					<div class="description">
+						{{ user.userprofile.about_me|linebreaks }}
+					</div>
 					<p>
 						<a href="{% url 'users:edit' %}" data-ajax="false" >Edit profile</a><br/>
 						<a href="{% url 'users:password_change' %}" data-ajax="false" >Change password</a><br/>
