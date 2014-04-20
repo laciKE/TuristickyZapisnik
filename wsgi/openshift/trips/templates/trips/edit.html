@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+<h2>{% trans "Edit trip " %}{{ trip.title }}</h2>
+
+<form id="trip_edit" method="post" action="{% url 'trips:edit' trip.id %}" enctype="multipart/form-data" data-ajax="false" >
+	{% csrf_token %}
+	{{ form.as_p }}
+	<input type="submit" data-icon="edit" value="{% trans 'Edit trip' %}" />
+</form>
+
+<div data-role="controlgroup" data-type="horizontal">
+	<a href="" class="ui-btn ui-corner-all ui-shadow ui-icon-camera ui-btn-icon-left" data-ajax="false" >{% trans 'Photos' %}</a>
+	{% if not trip.public %}
+	<a href="{% url 'trips:share' trip.id %}" class="ui-btn ui-corner-all ui-shadow ui-icon-user ui-btn-icon-left" data-ajax="false" >{% trans 'Share trip' %}</a>
+	{% endif %}
+	<a href="#delete" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-corner-all ui-shadow ui-icon-delete ui-btn-icon-left">{% trans 'Delete trip' %}</a>
+</div>
+
+<div data-role="popup" id="delete" class="ui-content" >
+	<h3>{% trans 'Delete trip' %} {{ trip.name }}?</h3>
+	<a href="" data-role="button" data-rel="back" data-icon="back" data-inline="true" data-mini="true">{% trans 'Cancel' %}</a>
+	<a href="{% url 'trips:delete' trip.id %}" data-role="button" data-icon="delete" data-inline="true" data-mini="true" data-ajax="false" >Delete</a>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+<h2>{% trans "My trips" %} </h2>
+
+<p><a href="{% url 'trips:create' %}" data-ajax="false" >{% trans 'Create new trip' %}</a></p>
+
+{% if trips %}
+<ul data-role="listview" data-filter="true" data-filter-placeholder="{% trans 'Search trips...' %}" data-inset="true" data-split-icon="edit">
+	{% for trip in trips %}
+	<li><a href="{% url 'trips:view' trip.id %}" data-ajax="false" ><h3>{{ trip.title }}</h3><p>{{ trip.description|slice:"0:80" }}</p></a><a href="{% url 'trips:edit' trip.id %}" data-ajax="false" >{% trans 'Edit' %}</a></li>
+	{% endfor %}
+</ul>
+
+{% else %}
+<p>{% trans "You have not created any trips yet." %}</p>
+{% endif %}
+
+{% endblock %}
