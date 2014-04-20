@@ -20,7 +20,6 @@ def index(request):
 	return render_to_response('users/index.html', {}, context)
 
 def profile(request, username):
-	print username
 	context = RequestContext(request)
 	user = get_object_or_404(User, username=username)
 	trips = user.trip_set.filter(public=True).order_by('-id')
