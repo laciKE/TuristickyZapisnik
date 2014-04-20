@@ -16,7 +16,7 @@ Public trip: {% if trip.public %}{% trans "yes" %}{% else %}{% trans "no" %}{% e
 {% if trip.owner == user %}
 	<a href="{% url 'trips:edit' trip.id %}" data-ajax="false" >Edit trip</a>
 {% else %}
-	{% trans "Created by " %}<a href="{% url 'users:profile' trip.owner.id %}">{{ trip.owner.username }}</a>
+	{% trans "Created by " %}<a href="{% url 'users:profile' trip.owner.username %}">{{ trip.owner.username }}</a>
 {% endif %}
 </p>
 <p>{{ trip.trip_begin }} - {{ trip.trip_end }}</p>

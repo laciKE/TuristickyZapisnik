@@ -51,8 +51,7 @@ def view(request, tripid):
 	user = request.user
 	try:
 		trip = Trip.objects.get(pk=tripid)
-		if trip.owner == user:
-		#TODO or trip is shared with user
+		if __shared_trip(trip, user):
 			return render_to_response('trips/view.html', {'trip': trip}, context)
 		else:
 			messages.error(request, _('You are not allowed to view this trip.'))
@@ -214,3 +213,10 @@ def add_group(request, tripid, groupid):
 		messages.error(request, _('You can not edit non-existing trip.'))
 	
 	return HttpResponseRedirect(reverse('trips:share', args=(tripid,)))
+
+def __shared_trip(trip, user):
+	shared_trip = (trip.owner == user) or trip.public
+	shared_trip |= (user in trip.share_users.all())
+	for group in trip.share_groups.all():
+		shared_trip |= (user in group.users.all())
+	return shared_trip
