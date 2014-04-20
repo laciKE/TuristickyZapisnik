@@ -14,4 +14,4 @@ virtenv/
 dist/
 build/
 private/
-wsgi/media/avatars/*
+wsgi/media/*
