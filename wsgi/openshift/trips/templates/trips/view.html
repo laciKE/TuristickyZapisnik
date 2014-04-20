@@ -23,15 +23,39 @@ Public trip: {% if trip.public %}{% trans "yes" %}{% else %}{% trans "no" %}{% e
 <p>{{ trip.description }}</p>
 
 {% if trip.gpx_log %}
+	<h3>{% trans 'Trip stats' %}</h3>
+	<p id="trip_stats">{% trans 'Loading gpx file..' %}</p>
 	<div id='map'></div>
 
-	<script src="{% static 'js/leaflet-omnivore.min.js' %}"></script>
 	<script src="{% static 'js/map.js' %}"></script>
+	<script src="{% static 'js/gpx.js' %}"></script>
 	<script>
-	var tripLayer = omnivore.gpx('{{ trip.gpx_log.url }}')
-		.on('ready', function() {
-			map.fitBounds(tripLayer.getBounds());
-		}).addTo(map);
+	var gpx = '{{ trip.gpx_log.url }}'
+	var gpxLayer = new L.GPX(gpx, {
+		async: true,
+		marker_options: {
+		    startIconUrl: '',
+		    endIconUrl: '',
+    		shadowUrl: ''
+		}
+	}).on('loaded', function(e) {
+		var html = '<span>{% trans "Distance: " %}' + (gpxLayer.get_distance()/1000).toFixed(2) + ' km</span><br/>';
+		if (gpxLayer.get_total_time()) {
+			var totalTime = (0.001*gpxLayer.get_total_time()/3600);
+			html += '<span>{% trans "Total time: " %}' + totalTime.toFixed(2) + ' h</span><br/>';
+			html += '<span>{% trans "Speed: " %}' + (gpxLayer.get_distance()/1000/totalTime).toFixed(2)+ ' km/h</span><br/>';
+		}
+		if (gpxLayer.get_elevation_gain()) {
+			html += '<span>{% trans "Elevation gain: " %}' + gpxLayer.get_elevation_gain()+ ' m</span><br/>';
+		}
+		if (gpxLayer.get_elevation_loss()) {
+			html += '<span>{% trans "Elevation loss: " %}' + gpxLayer.get_elevation_loss()+ ' m</span><br/>';
+		}
+		$('#trip_stats').html(html);
+
+		map.fitBounds(e.target.getBounds());
+		// TODO var elevation_data = gpxLayer.get_elevation_data();
+	}).addTo(map);
 	</script>
 {% endif %}
 

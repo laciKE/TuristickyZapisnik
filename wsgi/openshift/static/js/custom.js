@@ -3,7 +3,7 @@ $(document).on('pageinit', function() {
 		$(this).hide(500);
 	});
 
-	$(".datetimepicker").datetimepicker({
+	$('.datetimepicker').datetimepicker({
 		format:'Y-m-d H:i',
 	});
 });
