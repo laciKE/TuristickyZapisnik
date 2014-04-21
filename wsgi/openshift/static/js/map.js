@@ -49,14 +49,14 @@ function view_gpx(gpx){
 
 		map.fitBounds(e.target.getBounds());
 		
-		if (gpxLayer.get_elevation_gain()) {
+		try {
+			var elevation_data = gpxLayer.get_elevation_data();
 			$('#map').after("<canvas id='elevation_profile'></canvas>");
 			$('#map').after("<span id='tooltip'>&nbsp;</span>");
 			var c = $('#elevation_profile')[0];
 			var W = c.width = c.offsetWidth;
 			var H = c.height = c.offsetHeight;
 			var ctx = c.getContext('2d');
-			var elevation_data = gpxLayer.get_elevation_data();
 			d = elevation_data;
 			var maxElevation = 0;
 			var minElevation = 10000;
@@ -87,6 +87,8 @@ function view_gpx(gpx){
 					tooltip.text(tips[x]);
 				}
 			}
+		} catch (e) {
+			console.log(e);
 		}
 	}).addTo(map);
 }
