@@ -3,7 +3,7 @@
 {% load i18n %}
 
 {% block content %}
-<h2>{% trans "Edit trip " %}{{ trip.title }}</h2>
+<h2>{% trans "Edit trip " %}<a href="{% url 'trips:view' trip.id %}" data-ajax="false" >{{ trip.title }}</a></h2>
 
 <form id="trip_edit" method="post" action="{% url 'trips:edit' trip.id %}" enctype="multipart/form-data" data-ajax="false" >
 	{% csrf_token %}
