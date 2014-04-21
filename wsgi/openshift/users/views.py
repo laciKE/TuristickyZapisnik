@@ -140,6 +140,8 @@ def user_logout(request):
     # Take the user back to the homepage.
     return HttpResponseRedirect(reverse('home'))
 
+@sensitive_post_parameters()
+@csrf_protect
 @login_required
 def edit(request):
     context = RequestContext(request)

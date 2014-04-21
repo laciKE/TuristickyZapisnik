@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template.context import RequestContext
+from django.views.decorators.csrf import csrf_protect
 from groups.models import CustomGroup
 from trips.models import Trip
 from trips.forms import TripForm
@@ -19,14 +20,14 @@ def index(request):
 	context = RequestContext(request)
 	user = request.user
 	trips = user.trip_set.all().order_by('-id')
-	trip_form = TripForm()
-	return render_to_response('trips/index.html', {'trips': trips, 'form': trip_form}, context)
+	return render_to_response('trips/index.html', {'trips': trips}, context)
 
 def public(request):
 	context = RequestContext(request)
 	trips = Trip.objects.filter(public=True).order_by('-id')
 	return render_to_response('trips/public.html', {'trips': trips}, context)
 
+@csrf_protect
 @login_required
 def create(request):
 	context = RequestContext(request)
@@ -82,6 +83,7 @@ def delete(request, tripid):
 	
 	return HttpResponseRedirect(reverse('trips:index'))
 
+@csrf_protect
 @login_required
 def edit(request, tripid):
 	context = RequestContext(request)

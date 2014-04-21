@@ -7,12 +7,12 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponse
 from django.template.context import RequestContext
+from django.views.decorators.csrf import csrf_protect
 from groups.models import CustomGroup
 from groups.forms import CustomGroupForm
 
-# Create your views here.
 
-
+@csrf_protect
 @login_required
 def index(request):
 	context = RequestContext(request)
@@ -21,6 +21,7 @@ def index(request):
 	group_form = CustomGroupForm()
 	return render_to_response('groups/index.html', {'groups': groups, 'form': group_form}, context)
 
+@csrf_protect
 @login_required
 def create(request):
 	if request.method == 'POST':
