@@ -17,3 +17,5 @@ private/
 wsgi/media/*
 wsgi/openshift/static/js/leaflet-gpx.js
 wsgi/openshift/static/js/jquery.datetimepicker.js
+wsgi/openshift/static/css/leaflet.css
+wsgi/openshift/static/css/jquery.datetimepicker.css
