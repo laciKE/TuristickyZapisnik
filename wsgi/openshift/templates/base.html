@@ -10,12 +10,12 @@
 	<title>{% block title %}{{ the_title }}{% endblock %}</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" type="text/css" href="{% static 'css/jquery.mobile-1.4.2.min.css' %}" />
-	<link rel="stylesheet" type="text/css" href="{% static 'css/jquery.datetimepicker.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'css/jquery.datetimepicker.min.css' %}" />
 	<link rel="stylesheet" type="text/css" href="{% static 'css/custom.css' %}" />
 
 	<script src="{% static 'js/jquery-1.10.2.min.js' %}"></script>
 	<script src="{% static 'js/jquery.mobile-1.4.2.min.js' %}"></script>
-	<script src="{% static 'js/jquery.datetimepicker.js' %}"></script>
+	<script src="{% static 'js/jquery.datetimepicker.min.js' %}"></script>
 	<script src="{% static 'js/custom.js' %}"></script>
 
 	{% block extrahead %}{% endblock %}
@@ -25,15 +25,15 @@
 <body>
 <div data-role="page" data-quicklinks="true" data-url="{{ request.get_full_path }}">
 	<div data-role="header">
-		<h1>{% block header %}{{ the_title }}{% endblock %}</h1>
+		<h1>{% block header %}{{ the_title }} <sub>beta</sub>{% endblock %}</h1>
 	</div><!-- /header -->
 
 	<div data-role="navbar">
 		<ul>
 			{% if user.is_authenticated %}
-			<li><a href="{% url 'users:index' %}" data-ajax="false">{% trans 'Dashboard' %}</a></li>
+			<li><a href="{% url 'dashboard' %}" data-ajax="false">{% trans 'Dashboard' %}</a></li>
 			<li><a href="{% url 'trips:index' %}" data-ajax="false">{% trans 'My trips' %}</a></li>
-			<li><a href="{% url 'users:profile' user.username %}" data-ajax="false">{% trans 'My profile' %}</a></li>
+			<li><a href="{% url 'groups:index' %}" data-ajax="false">{% trans 'My groups' %}</a></li>
 			<li><a href="{% url 'users:logout'%}" data-ajax="false">{% trans 'Logout' %} {{ user.username}}</a>
 
 			{% else %}
@@ -54,23 +54,24 @@
 		</div>
 		{% endif %}
 		{% if user.is_authenticated %}
-		<div class="ui-grid-a">
+		<div class="ui-grid-a two-column">
 			<div class="ui-block-a">
 		{% endif %}
 				<div class="ui-body ui-body-a">
 					{% block content %}{% endblock %}
 				</div>
 			{% if user.is_authenticated %}
-	    	</div>
-    		<div class="ui-block-b">
+			</div>
+			<div class="ui-block-b">
 				<div class="ui-body ui-body-a">
 					<h3>{{ user.username }}</h3>
-					<img src="{{ user.userprofile.avatar.url }}" alt="{{ user.username }} avatar" />
-					<p>{{ user.userprofile.about_me }}</p>
+					<a href="{% url 'users:profile' user.username %}"><img src="{{ user.userprofile.avatar.url }}" alt="{{ user.username }} avatar" /></a>
+					<div class="description">
+						{{ user.userprofile.about_me|linebreaks }}
+					</div>
 					<p>
 						<a href="{% url 'users:edit' %}" data-ajax="false" >Edit profile</a><br/>
 						<a href="{% url 'users:password_change' %}" data-ajax="false" >Change password</a><br/>
-						<a href="{% url 'groups:index' %}" data-ajax="false" >My groups</a><br/>
 
 						<a href="{% url 'users:logout' %}" data-ajax="false">Logout</a>
 </p>

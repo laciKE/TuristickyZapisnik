@@ -3,7 +3,7 @@
 {% load i18n %}
 
 {% block content %}
-<h2>{% trans "Edit trip " %}{{ trip.title }}</h2>
+<h2>{% trans "Edit trip " %}<a href="{% url 'trips:view' trip.id %}" data-ajax="false" >{{ trip.title }}</a></h2>
 
 <form id="trip_edit" method="post" action="{% url 'trips:edit' trip.id %}" enctype="multipart/form-data" data-ajax="false" >
 	{% csrf_token %}
@@ -13,9 +13,7 @@
 
 <div data-role="controlgroup" data-type="horizontal">
 	<a href="" class="ui-btn ui-corner-all ui-shadow ui-icon-camera ui-btn-icon-left" data-ajax="false" >{% trans 'Photos' %}</a>
-	{% if not trip.public %}
 	<a href="{% url 'trips:share' trip.id %}" class="ui-btn ui-corner-all ui-shadow ui-icon-user ui-btn-icon-left" data-ajax="false" >{% trans 'Share trip' %}</a>
-	{% endif %}
 	<a href="#delete" data-rel="popup" data-position-to="window" data-transition="pop" class="ui-btn ui-corner-all ui-shadow ui-icon-delete ui-btn-icon-left">{% trans 'Delete trip' %}</a>
 </div>
 

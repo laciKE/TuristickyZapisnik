@@ -1,3 +1,21 @@
+.two-column>.ui-block-a {
+	width: 62.5%;
+}
+
+.two-column>.ui-block-b {
+	width: 37.5%;
+}
+
+.description {
+	text-align: justify;
+}
+
+#password_change_form, #login_form, #user_form {
+	max-width: 480px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
 /* flash messages */
 
 .message {
@@ -29,6 +47,12 @@
 }
 
 #map {
+	width: 100%;
+	height: 360px;
+}
+
+#elevation_profile {
+	padding-top: 1ex;
 	width: 100%;
 	height: 360px;
 }

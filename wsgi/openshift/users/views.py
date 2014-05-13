@@ -13,17 +13,17 @@ from django.http import HttpResponseRedirect, HttpResponse, HttpResponseBadReque
 from django.template.context import RequestContext
 from django.contrib.auth.forms import PasswordChangeForm
 from users.forms import UserForm, UserEditForm, UserProfileForm
-# Create your views here.
+from trips.models import Trip
 
 def index(request):
 	context = RequestContext(request)
 	return render_to_response('users/index.html', {}, context)
 
 def profile(request, username):
-	print username
 	context = RequestContext(request)
 	user = get_object_or_404(User, username=username)
-	return render_to_response('users/profile.html', {'profile': user}, context)
+	trips = user.trip_set.filter(public=True).order_by('-id')
+	return render_to_response('users/profile.html', {'profile': user, 'trips': trips}, context)
 
 @sensitive_post_parameters()
 @csrf_protect
@@ -113,7 +113,7 @@ def user_login(request):
                 # We'll send the user back to the homepage.
                 login(request, user)
                 messages.success(request, _('Welcome, ') + user.username)
-                return HttpResponseRedirect(reverse('users:index'))
+                return HttpResponseRedirect(reverse('dashboard'))
             else:
                 # An inactive account was used - no logging in!
                 messages.warning(request, _('Your account has been disabled.'))
@@ -140,6 +140,8 @@ def user_logout(request):
     # Take the user back to the homepage.
     return HttpResponseRedirect(reverse('home'))
 
+@sensitive_post_parameters()
+@csrf_protect
 @login_required
 def edit(request):
     context = RequestContext(request)
@@ -210,7 +212,7 @@ def password_change(request):
 def search(request):
 	if request.method == "GET" and 'q' in request.GET:
 		q = request.GET['q']
-		users = User.objects.filter(username__contains=q).filter(is_superuser=False)
+		users = User.objects.filter(username__icontains=q).filter(is_superuser=False)
 		data = simplejson.dumps([(user.id, user.username, user.get_full_name(), user.userprofile.avatar.url) for user in users])
 		return HttpResponse(data, mimetype='application/json')
 	else:
