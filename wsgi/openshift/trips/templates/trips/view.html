@@ -27,7 +27,7 @@ Public trip: {% if trip.public %}{% trans "yes" %}{% else %}{% trans "no" %}{% e
 {% if trip.gpx_log %}
 	<h3>{% trans 'Trip stats' %}</h3>
 	<p id="trip_stats">{% trans 'Loading gpx file..' %}</p>
-	<div id='map'></div>
+	<div id="map"></div>
 
 	<!--<script src="{% static 'js/leaflet-gpx.js' %}"></script>-->
 	<script src="{% static 'js/leaflet-gpx.min.js' %}"></script>
@@ -35,6 +35,28 @@ Public trip: {% if trip.public %}{% trans "yes" %}{% else %}{% trans "no" %}{% e
 	<script>
 		view_gpx('{{ trip.gpx_log.url }}');
 	</script>
+{% endif %}
+
+{% if comment_form %}
+	<form id="comment_add" method="post" action="{% url 'trips:add_comment' trip.id %}" data-ajax="false">
+	{% csrf_token %}
+	{{ comment_form.as_p }}
+	<input type="submit" data-icon="comment" value="{% trans 'Add comment' %}" />
+	</form>
+{% endif %}
+
+{% if comments %}
+	<div id="comments">
+		<ul data-role="listview" data-inset="true">
+		{% for comment in comments %}
+			<li>
+				<h3><a href="{% url 'users:profile' comment.author.username %}">{{ comment.author.username }}</a></h3>
+				<p>{{ comment.message }}</p>
+				<p class="ui-li-aside"><strong>{{ comment.created }}</strong></p>
+			</li>
+		{% endfor %}
+		</ul>
+	</div>
 {% endif %}
 
 {% endblock %}

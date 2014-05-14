@@ -9,10 +9,8 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.template.context import RequestContext
 from django.views.decorators.csrf import csrf_protect
 from groups.models import CustomGroup
-from trips.models import Trip
-from trips.forms import TripForm
-
-# Create your views here.
+from trips.models import Trip, Comment, Photo
+from trips.forms import TripForm, CommentForm
 
 
 @login_required
@@ -58,7 +56,11 @@ def view(request, tripid):
 	try:
 		trip = Trip.objects.get(pk=tripid)
 		if __shared_trip(trip, user):
-			return render_to_response('trips/view.html', {'trip': trip}, context)
+			comments = trip.comment_set.all().order_by('-id')
+			comment_form = None
+			if (user.is_authenticated()):
+				comment_form = CommentForm()
+			return render_to_response('trips/view.html', {'trip': trip, 'comments': comments, 'comment_form': comment_form}, context)
 		else:
 			messages.error(request, _('You are not allowed to view this trip.'))
 	except Trip.DoesNotExist:
@@ -66,6 +68,35 @@ def view(request, tripid):
 	
 	return HttpResponseRedirect(reverse('home'))
 
+@login_required
+def add_comment(request, tripid):
+	context = RequestContext(request)
+	user = request.user
+	try:
+		trip = Trip.objects.get(pk=tripid)
+		if __shared_trip(trip, user):
+			if request.method == 'POST':
+				comment_form = CommentForm(data=request.POST)
+				if comment_form.is_valid():
+					comment = comment_form.save(commit=False)
+					comment.author = user
+					comment.trip = trip
+					try:
+						comment.save()
+						messages.success(request, _('Successfully added comment.'))
+					except ValidationError, e:
+						messages.error(request, e.message)
+				else:
+					messages.error(request, comment_form.errors)
+
+			return HttpResponseRedirect(reverse('trips:view', args=(tripid,)))
+		else:
+			messages.error(request, _('You are not allowed to comment this trip.'))
+
+	except Trip.DoesNotExist:
+		messages.error(request, _('You can not comment non-existing trip.'))
+	
+	return HttpResponseRedirect(reverse('home'))
 
 @login_required
 def delete(request, tripid):

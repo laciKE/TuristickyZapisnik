@@ -63,6 +63,18 @@ class Trip(models.Model):
 	def __unicode__(self):
 		return self.title + '__' + self.owner.username
 
+
+class Comment(models.Model):
+	trip = models.ForeignKey(Trip)
+	author = models.ForeignKey(User)
+	message = models.TextField(_('message'), max_length=80, blank=False)
+	created = models.DateTimeField(auto_now_add=True)
+	# Override the __unicode__() method to return out something meaningful
+	def __unicode__(self):
+		return self.trip.title + '__' + self.author.username + "__" + self.message[0:40]
+
+
+
 class Photo(models.Model):
 	trip = models.ForeignKey(Trip)
 	title = models.CharField(_('title'), max_length=80, blank=True)
