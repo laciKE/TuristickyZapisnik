@@ -69,6 +69,7 @@ def view(request, tripid):
 	
 	return HttpResponseRedirect(reverse('home'))
 
+@csrf_protect
 @login_required
 def add_comment(request, tripid):
 	context = RequestContext(request)
@@ -97,6 +98,42 @@ def add_comment(request, tripid):
 	except Trip.DoesNotExist:
 		messages.error(request, _('You can not comment non-existing trip.'))
 	
+	return HttpResponseRedirect(reverse('home'))
+
+@csrf_protect
+@login_required
+def add_photos(request, tripid):
+	context = RequestContext(request)
+	user = request.user
+	try:
+		trip = Trip.objects.get(pk=tripid)
+		if __shared_trip(trip, user):
+			if (request.method == 'POST') and ('file' in request.FILES):
+				photo = Photo(image=request.FILES['file'])
+				photo.trip = trip
+				try:
+					photo.save()
+					messages.success(request, _('Successfully upload photo.'))
+				except ValidationError, e:
+					messages.error(request, e.message)
+
+				return HttpResponseRedirect(reverse('trips:view', args=(tripid,)))
+			else:
+				return render_to_response('trips/photos_add.html', {'trip': trip}, context)
+
+		else:
+			messages.error(request, _('You are not allowed to add photo to this trip.'))
+
+	except Trip.DoesNotExist:
+		messages.error(request, _('You can not add photo to non-existing trip.'))
+	
+	return HttpResponseRedirect(reverse('home'))
+
+@csrf_protect
+@login_required
+def photos(request, tripid):
+	context = RequestContext(request)
+	user = request.user
 	return HttpResponseRedirect(reverse('home'))
 
 @login_required
