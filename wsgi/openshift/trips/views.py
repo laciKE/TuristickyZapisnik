@@ -56,11 +56,12 @@ def view(request, tripid):
 	try:
 		trip = Trip.objects.get(pk=tripid)
 		if __shared_trip(trip, user):
+			photos = trip.photo_set.all()
 			comments = trip.comment_set.all().order_by('-id')
 			comment_form = None
 			if (user.is_authenticated()):
 				comment_form = CommentForm()
-			return render_to_response('trips/view.html', {'trip': trip, 'comments': comments, 'comment_form': comment_form}, context)
+			return render_to_response('trips/view.html', {'trip': trip, 'photos': photos, 'comments': comments, 'comment_form': comment_form}, context)
 		else:
 			messages.error(request, _('You are not allowed to view this trip.'))
 	except Trip.DoesNotExist:
