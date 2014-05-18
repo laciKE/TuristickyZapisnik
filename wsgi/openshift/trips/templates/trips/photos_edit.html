@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load i18n %}
+
+{% block content %}
+<h2>{% trans "Edit photos from trip" %} <a href="{% url 'trips:view' trip.id %}" data-ajax="false" >{{ trip.title }}</a></h2>
+<p><a href="{% url 'trips:add_photos' trip.id %}" data-ajax="false" >{% trans "Add photos to this trip" %}</a></p>
+{% if photos %}
+	<form id="photos_edit" method="post" action="{% url 'trips:edit_photos' trip.id %}" data-ajax="false">
+		{% csrf_token %}
+		<ul id="Gallery_thumb" class="gallery gallery-edit">
+		{% for photo in photos %}
+			<li><a href=""><img src="{{ photo.thumb.url }}" alt="{{ photo.title}}" /><span>{% trans 'Remove photo' %}</span></a><input data-mini="true" maxlength="60" name="{{ photo.id }}" type="text" value="{{ photo.title }}" placeholder="{% trans 'Title of this photo' %}" /></li>
+		{% endfor %}
+		</ul>
+		<input type="submit" data-icon="edit" value="{% trans 'Update photos' %}" />
+	</form>
+{% endif %}
+
+{% endblock %}

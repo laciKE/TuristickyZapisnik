@@ -5,7 +5,7 @@ import os, Image
 from uuid import uuid4
 
 AVATAR_SIZE = (128, 128)
-#helper function generating random names for avatars
+# helper function generating random names for avatars
 def path_and_rename(path):
 	def wrapper(instance, filename):
 		ext = filename.split('.')[-1]
@@ -15,6 +15,7 @@ def path_and_rename(path):
 		return os.path.join(path, filename)
 	return wrapper
 
+# helper function for resizing and cropping uploaded avatar
 def resize_avatar(avatar):
 	img = Image.open(avatar)
 	w, h = img.size
@@ -26,6 +27,7 @@ def resize_avatar(avatar):
 	img.save(avatar.path)
 
 
+# Extends default user with additional fields encapsulated in UserProfile class
 class UserProfile(models.Model):
 	#extends model User
 	user = models.OneToOneField(User)
@@ -42,7 +44,3 @@ class UserProfile(models.Model):
 	def save(self):
 		super(UserProfile, self).save()
 		resize_avatar(self.avatar)
-
-
-
-

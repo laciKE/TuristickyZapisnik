@@ -4,11 +4,41 @@
 {% load i18n %}
 
 {% block extrahead %}
-	<link rel="stylesheet" type="text/css" href="{% static 'css/leaflet.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'css/leaflet.min.css' %}" />
+	
 	<script src="{% static 'js/leaflet.js' %}"></script>
+
+	{% if trip.gpx_log %}
+		<link rel="stylesheet" type="text/css" href="{% static 'css/Leaflet.Elevation-0.0.2.css' %}" />
+
+		<!--<script src="{% static 'js/leaflet-gpx.js' %}"></script>-->
+		<script src="{% static 'js/leaflet-gpx.min.js' %}"></script>
+		<script src="{% static 'js/d3.v3.min.js' %}"></script>
+		<script src="{% static 'js/Leaflet.Elevation-0.0.2.min.js' %}"></script>
+		<script src="{% static 'js/map.js' %}"></script>
+	{% endif %}
+	
+	{% if photos %}
+			<link rel="stylesheet" type="text/css" href="{% static 'css/photoswipe.css' %}" />
+			<script src="{% static 'js/klass.min.js' %}"></script>
+			<script src="{% static 'js/code.photoswipe.jquery-3.0.5.min.js' %}"></script>
+
+			<script type="text/javascript">
+			/*
+				Set up PhotoSwipe using jQuery Mobile.
+			*/
+			$(document).ready(function(){
+					$("ul.gallery a").photoSwipe({ enableMouseWheel: false, enableKeyboard: true });
+			});
+		</script>
+	{% endif %}
+
 {% endblock %}
 
 {% block content %}
+{% if photos %}
+	<div class="gallery-page">
+{% endif %}
 <h2>{% trans "Trip" %} {{ trip.title }}</h2>
 <p>
 Created: {{ trip.created }}, last change: {{ trip.modified }}<br/>
@@ -27,14 +57,50 @@ Public trip: {% if trip.public %}{% trans "yes" %}{% else %}{% trans "no" %}{% e
 {% if trip.gpx_log %}
 	<h3>{% trans 'Trip stats' %}</h3>
 	<p id="trip_stats">{% trans 'Loading gpx file..' %}</p>
-	<div id='map'></div>
+	<div id="map"></div>
 
-	<!--<script src="{% static 'js/leaflet-gpx.js' %}"></script>-->
-	<script src="{% static 'js/leaflet-gpx.min.js' %}"></script>
-	<script src="{% static 'js/map.js' %}"></script>
 	<script>
 		view_gpx('{{ trip.gpx_log.url }}');
 	</script>
+{% endif %}
+
+{% if photos %}
+	<h3>{% trans 'Photos from trip' %}</h3>
+	<ul id="Gallery_thumb" class="gallery">
+	{% for photo in photos %}
+		<li><a href="{{ photo.image.url}}" rel="external" title="{{ photo.title }}" ><img src="{{ photo.thumb.url }}" alt="{{ photo.title}}" /></a></li>
+	{% endfor %}
+	</ul>
+{% endif %}
+
+{% if comment_form or comments%}
+	<h3>{% trans 'Comments' %}</h3>
+
+	<div id="comments">
+	{% if comment_form %}
+		<form id="comment_add" method="post" action="{% url 'trips:add_comment' trip.id %}" data-ajax="false">
+		{% csrf_token %}
+		{{ comment_form.as_p }}
+		<input type="submit" data-icon="comment" value="{% trans 'Add comment' %}" />
+		</form>
+	{% endif %}
+
+	{% if comments %}
+			<ul data-role="listview" data-inset="true">
+			{% for comment in comments %}
+				<li>
+					<h3><a href="{% url 'users:profile' comment.author.username %}">{{ comment.author.username }}</a></h3>
+					<p>{{ comment.message }}</p>
+					<p class="ui-li-aside"><strong>{{ comment.created }}</strong></p>
+				</li>
+			{% endfor %}
+			</ul>
+	{% endif %}
+	</div> <!-- comments -->
+{% endif %}
+
+{% if photos %}
+	</div> <!-- gallery-page -->
 {% endif %}
 
 {% endblock %}

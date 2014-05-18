@@ -2,7 +2,7 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
-import os
+import os, Image
 from uuid import uuid4
 from datetime import datetime
 from groups.models import CustomGroup
@@ -14,11 +14,15 @@ def path_and_rename(path):
 		# set filename as random string
 		filename = '{0}.{1}'.format(uuid4().hex, ext.lower())
 		# return the whole path to the file
-		return os.path.join(path, str(instance.owner.id), filename)
+		# check type of instance and determine correct save path
+		if (type(instance) is Trip):
+			return os.path.join(path, str(instance.owner.id), filename)
+		else: # type(instance) is Photo
+			return os.path.join(path, str(instance.trip.owner.id), filename)
 	return wrapper
 
+# Trip model with all fields related with real trips
 class Trip(models.Model):
-
 	#basic trip properties
 	title = models.CharField(_('title'), max_length=80)
 	owner = models.ForeignKey(User)
@@ -39,10 +43,12 @@ class Trip(models.Model):
         blank=True, help_text=_('The groupss sharing this trip.'),
         related_name="shared_trips", related_query_name="trips")
 
+	# helper function for validation that trip begins before it ends
 	def validate_trip_begin_end(self):        
 		if self.trip_begin > self.trip_end:
 			raise ValidationError(_('Trip must ends after it begins'))
 
+	# helper function for validation uniqe trip title per user
 	def validate_unique_title_owner(self):        
 		qs = Trip.objects.filter(title=self.title)
 		if self.id:
@@ -50,10 +56,52 @@ class Trip(models.Model):
 		if qs.filter(owner=self.owner).exists():
 			raise ValidationError(_('Trip title must be unique per user'))
 
+	# Override save() due to custom validation
 	def save(self):
 		self.validate_trip_begin_end()
 		self.validate_unique_title_owner()
 		super(Trip, self).save()
 
+	# Override the __unicode__() method to return out something meaningful
 	def __unicode__(self):
 		return self.title + '__' + self.owner.username
+
+# comment model with reference to author, trip and comment message
+class Comment(models.Model):
+	trip = models.ForeignKey(Trip)
+	author = models.ForeignKey(User)
+	message = models.TextField(_('message'), max_length=80, blank=False)
+	created = models.DateTimeField(auto_now_add=True)
+
+	# Override the __unicode__() method to return out something meaningful
+	def __unicode__(self):
+		return self.trip.title + '__' + self.author.username + "__" + self.message[0:40]
+
+# comment model with reference to trip, photo image and thumbnail and text photo title
+class Photo(models.Model):
+	trip = models.ForeignKey(Trip)
+	title = models.CharField(_('title'), max_length=80, blank=True)
+	image = models.ImageField(upload_to=path_and_rename('photos'), blank=False)
+	thumb = models.ImageField(upload_to=path_and_rename('photos_thumb'), blank=True)
+
+	# Override the __unicode__() method to return out something meaningful
+	def __unicode__(self):
+		return self.trip.title + '__' + os.path.basename(self.image.url)
+
+	# Override save() due to create thumbnail of the photo
+	def save(self):
+		self.thumb.save(self.image.path, self.image, save=False)
+		super(Photo, self).save()
+		create_thumbnail(self.thumb)
+
+THUMB_SIZE = (160, 160)
+# create thumbnail from full-size photo image
+def create_thumbnail(thumb):
+	img = Image.open(thumb.path)
+	w, h = img.size
+	if w < h:
+		img = img.crop((0, 0, w, w))
+	else:
+		img = img.crop(((w-h)/2, 0, w-(w-h)/2, h)) 
+	img = img.resize(THUMB_SIZE, Image.ANTIALIAS)
+	img.save(thumb.path)

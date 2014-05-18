@@ -23,8 +23,17 @@ function view_gpx(gpx){
 		"OSM Mapnik": osm_mapnik,
 	};
 
+	var elevation = L.control.elevation({
+	    position: "topright",
+    	theme: "purple-theme", //default: lime-theme
+	    width: 300,
+    	height: 125,
+		collapsed: true
+	});
+	elevation.addTo(map);
+
 	L.control.layers(baseMaps, {}).addTo(map);
-	
+
 	var gpxLayer = new L.GPX(gpx, {
 		async: true,
 		marker_options: {
@@ -32,6 +41,8 @@ function view_gpx(gpx){
 		    endIconUrl: '',
     		shadowUrl: ''
 		}
+	}).on("addline",function(e){
+		elevation.addData(e.line);
 	}).on('loaded', function(e) {
 		var html = '<span>Distance: ' + (gpxLayer.get_distance()/1000).toFixed(2) + ' km</span><br/>';
 		if (gpxLayer.get_total_time()) {
@@ -48,15 +59,15 @@ function view_gpx(gpx){
 		$('#trip_stats').html(html);
 
 		map.fitBounds(e.target.getBounds());
-		
-		if (gpxLayer.get_elevation_gain()) {
+		/*
+		try {
+			var elevation_data = gpxLayer.get_elevation_data();
 			$('#map').after("<canvas id='elevation_profile'></canvas>");
 			$('#map').after("<span id='tooltip'>&nbsp;</span>");
 			var c = $('#elevation_profile')[0];
 			var W = c.width = c.offsetWidth;
 			var H = c.height = c.offsetHeight;
 			var ctx = c.getContext('2d');
-			var elevation_data = gpxLayer.get_elevation_data();
 			d = elevation_data;
 			var maxElevation = 0;
 			var minElevation = 10000;
@@ -87,6 +98,9 @@ function view_gpx(gpx){
 					tooltip.text(tips[x]);
 				}
 			}
+		} catch (e) {
+			console.log(e);
 		}
+		*/
 	}).addTo(map);
 }
