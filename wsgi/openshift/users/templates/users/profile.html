@@ -12,5 +12,13 @@
 </table>
 
 <h3>Public trips</h3>
-TODO
+{% if trips %}
+<ul data-role="listview" data-filter="true" data-filter-placeholder="{% trans 'Search user public trips...' %}" data-inset="true" >
+	{% for trip in trips %}
+	<li><a href="{% url 'trips:view' trip.id %}" data-ajax="false" ><h3>{{ trip.title }}</h3><p>{{ trip.description|slice:"0:80" }}</p></a></li>
+	{% endfor %}
+</ul>
+{% else %}
+<p>{% trans "This user have not created any public trips yet." %}</p>
+{% endif %}
 {% endblock %}

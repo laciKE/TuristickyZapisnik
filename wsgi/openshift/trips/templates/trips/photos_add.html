@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+{% load i18n %}
+
+{% block extrahead %}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/dropzone.css' %}" />
+	<script src="{% static 'js/dropzone.min.js' %}"></script>
+{% endblock %}	
+
+{% block content %}
+<h2>{% trans "Upload new photos to trip " %}<a href="{% url 'trips:view' trip.id %}" data-ajax="false" >{{ trip.title }}</a></h2>
+<p><a href="{% url 'trips:edit_photos' trip.id %}" data-ajax="false" >Edit photos from this trip</a></p>
+<form id="add_photos" class="dropzone" method="post" action="{% url 'trips:add_photos' trip.id %}" enctype="multipart/form-data" data-ajax="false" >
+	{% csrf_token %}
+	{{ form.as_p }}
+</form>
+<input type="submit" id="upload_photos" data-icon="action" value="{% trans 'Upload photos' %}" />
+
+<script type="text/javascript">
+	// "addPhotos" is the camelized version of the HTML element's ID
+	Dropzone.options.addPhotos = {
+	maxFilesize: 2, // MB
+	autoProcessQueue : false,	// Prevents Dropzone from uploading dropped files immediately
+	addRemoveLinks: true,
+	init : function() {
+		
+		dropzone = this;
+		$("#upload_photos").click(function() {
+				dropzone.processQueue(); // tell Dropzone to process all queued files.
+ 		});
+ 		// remove uploaded file from dropzone box
+ 		this.on("success", function(file) {
+			this.removeFile(file);
+		});
+		// after start processing upload, set autoProcessQueue to true for autoupload all the files (not only parallelUploads files) 
+		this.on("processing", function() {
+			this.options.autoProcessQueue = true;
+		});
+		// after processing all files in queue, stop autoupload
+ 		this.on("queuecomplete", function() {
+			this.options.autoProcessQueue = false;
+ 		});
+	}
+};
+</script>
+
+{% endblock %}
