@@ -16,6 +16,14 @@
 	margin-right: auto;
 }
 
+#stats th {
+	text-align: left;
+}
+
+#stats td {
+	text-align: right;
+}
+
 /* flash messages */
 
 .message {

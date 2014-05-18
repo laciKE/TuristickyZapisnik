@@ -6,7 +6,17 @@
 <h2>{% trans "Dashboard" %} </h2>
 
 <h3>{% trans "Personal stats" %}</h3>
-<p>TODO</p>
+<table id="stats">
+	<tr><th>{% trans 'Last login' %}:</th><td>{{ stats.last_login }}</td></tr>
+	<tr><th>{% trans 'Member since' %}:</th><td>{{ stats.date_joined }}</td></tr>
+	<tr><th>{% trans 'Trips shared with me' %}:</th><td>{{ stats.share_trips }}</td></tr>
+	<tr><th>{% trans 'All my trips' %}:</th><td>{{ stats.trips }}</td></tr>
+	<tr><th>{% trans 'My public trips' %}:</th><td>{{ stats.public_trips }}</td></tr>
+	<tr><th>{% trans 'My photos' %}:</th><td>{{ stats.photos }}</td></tr>
+	<tr><th>{% trans 'My comments' %}:</th><td>{{ stats.comments }}</td></tr>
+	<tr><th>{% trans 'My groups' %}:</th><td>{{ stats.groups }}</td></tr>
+	<tr><th>{% trans 'Groups with me' %}:</th><td>{{ stats.share_groups }}</td></tr>
+</table>
 
 <h3>{% trans "Trips shared with me" %}</h3>
 <span>View all <a href="{% url 'trips:public' %}">public trips.</a></span>
