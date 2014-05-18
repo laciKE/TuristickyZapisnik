@@ -8,6 +8,7 @@
 <h2>{% trans "Welcome to the Tourist diary." %}</h2> 
 <div id="home-grid" class="ui-grid-b ui-responsive">
 	<div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:280px">
+		<p class="notice">{% trans "Notice: current version: Release Candidate (RC)." %}</p>
 		<p>{% trans "This page aims to be a place for storing personal notes, photos and gpx logs from your trips and sharing them with friends." %}</p>
 
 		<p>{% trans "You can browse and view all public trips and profiles of our users, but registered users have access to much more functionality. If it sounds interesting for you, you can see some screenshots below and right and continue with " %}<a href="{% url 'users:registration'%}">{% trans "registration"%}</a>.</p>

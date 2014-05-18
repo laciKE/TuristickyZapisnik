@@ -6,12 +6,21 @@
 	width: 100%;
 }
 
+#home-grid p {
+	text-align: justify;
+}
+
 .two-column>.ui-block-a {
 	width: 62.5%;
 }
 
 .two-column>.ui-block-b {
 	width: 37.5%;
+}
+
+.notice {
+	font-style: italic;
+	font-size: 80%;
 }
 
 .description {
