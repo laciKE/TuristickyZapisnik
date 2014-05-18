@@ -117,12 +117,14 @@ def add_photos(request, tripid):
 				except ValidationError, e:
 					messages.error(request, e.message)
 
-				return HttpResponseRedirect(reverse('trips:view', args=(tripid,)))
+				return HttpResponseRedirect(reverse('trips:edit_photos', args=(tripid,)))
 			else:
 				return render_to_response('trips/photos_add.html', {'trip': trip}, context)
 
 		else:
 			messages.error(request, _('You are not allowed to add photo to this trip.'))
+			return HttpResponseRedirect(reverse('trips:view', args=(tripid,)))
+
 
 	except Trip.DoesNotExist:
 		messages.error(request, _('You can not add photo to non-existing trip.'))
@@ -131,10 +133,43 @@ def add_photos(request, tripid):
 
 @csrf_protect
 @login_required
-def photos(request, tripid):
+def edit_photos(request, tripid):
 	context = RequestContext(request)
 	user = request.user
+	try:
+		trip = Trip.objects.get(pk=tripid)
+		photos = trip.photo_set.all()
+		if __shared_trip(trip, user):
+			if request.method == 'POST':
+				try:
+					for photo in photos:
+						id = str(photo.id)
+						if request.POST.has_key(id):
+							edited_photo = request.POST.get(id)
+							if photo.title != edited_photo:
+								photo.title = edited_photo
+								photo.save()
+						else:
+							photo.delete()
+
+					photos = trip.photo_set.all()
+					messages.success(request, _('Successfully edited photos.'))
+				except ValidationError, e:
+					messages.error(request, e.message)
+				except ValueError, e:
+					messages.error(request, e.message)
+
+			return render_to_response('trips/photos_edit.html', {'trip': trip, 'photos': photos}, context)
+
+		else:
+			messages.error(request, _('You are not allowed to edit photos of this trip.'))
+			return HttpResponseRedirect(reverse('trips:view', args=(tripid,)))
+
+	except Trip.DoesNotExist:
+		messages.error(request, _('You can not edit photos of non-existing trip.'))
+	
 	return HttpResponseRedirect(reverse('home'))
+
 
 @login_required
 def delete(request, tripid):
