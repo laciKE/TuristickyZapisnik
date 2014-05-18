@@ -1,3 +1,11 @@
+#home-grid figure {
+	margin: 5px;
+}
+
+#home-grid img {
+	width: 100%;
+}
+
 .two-column>.ui-block-a {
 	width: 62.5%;
 }

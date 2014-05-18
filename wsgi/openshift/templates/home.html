@@ -5,7 +5,44 @@
 
 {% block content %}
 
-<p>{% trans "This page is under construction..." %}</p>
-<p style="text-align: center;"><img src="{% static 'img/screenshot-views.py.png' %}" alt="{% trans 'GVim editor with code' %}" /></p>
+<h2>{% trans "Welcome to the Tourist diary." %}</h2> 
+<div id="home-grid" class="ui-grid-b ui-responsive">
+	<div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:280px">
+		<p>{% trans "This page aims to be a place for storing personal notes, photos and gpx logs from your trips and sharing them with friends." %}</p>
+
+		<p>{% trans "You can browse and view all public trips and profiles of our users, but registered users have access to much more functionality. If it sounds interesting for you, you can see some screenshots below and right and continue with " %}<a href="{% url 'users:registration'%}">{% trans "registration"%}</a>.</p>
+
+	</div></div>
+	<div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:280px">
+		<figure>
+			<img src="{% static 'img/screenshot-trips.png' %}" alt="{% trans 'Trips' %}" />
+			<figcaption>{% trans 'Users can create and manage own trips.' %}</figcaption>
+		</figure>
+	</div></div>
+	<div class="ui-block-c"><div class="ui-bar ui-bar-a" style="height:280px">
+		<figure>
+			<img src="{% static 'img/screenshot-trip.png' %}" alt="{% trans 'Trip' %}" />
+			<figcaption>{% trans 'Users can attach photo gallery and gpx log to the trip and comments other trips.' %}</figcaption>
+		</figure>
+	</div></div>
+	<div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:280px">
+		<figure>
+			<img src="{% static 'img/screenshot-dashboard.png' %}" alt="{% trans 'Dashboard' %}" />
+			<figcaption>{% trans 'Dashboard with personal stats and list of trips shared with user.' %}</figcaption>
+		</figure>
+	</div></div>
+	<div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:280px">
+		<figure>
+			<img src="{% static 'img/screenshot-group.png' %}" alt="{% trans 'Groups' %}" />
+			<figcaption>{% trans 'Users can create and manage groups for easy sharing' %}</figcaption>
+		</figure>
+	</div></div>
+	<div class="ui-block-c"><div class="ui-bar ui-bar-a" style="height:280px">
+		<figure>
+			<img src="{% static 'img/screenshot-profile.png' %}" alt="{% trans 'Edit profile' %}" />
+			<figcaption>{% trans 'Profile edit page' %}</figcaption>
+		</figure>
+	</div></div>
+</div><!-- /grid-a -->
 
 {% endblock %}
