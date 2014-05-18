@@ -4,6 +4,7 @@ from django.conf import settings
 from django.contrib import admin
 admin.autodiscover()
 
+# include urls patterns and paths from individual apps
 urlpatterns = patterns('',
 	url(r'^$', 'views.home', name='home'),
 	url(r'^dashboard/$', 'views.dashboard', name='dashboard'),

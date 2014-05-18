@@ -6,10 +6,12 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from trips.models import Trip
 
+# view for home page, simply render home template
 def home(request):
 	context = RequestContext(request)
 	return render_to_response('home.html', {}, context)
 
+# view for user dashboard, display list with shared trips and collect and display personal stats
 @login_required
 def dashboard(request):
 	context = RequestContext(request)

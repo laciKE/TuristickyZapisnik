@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_protect
 from groups.models import CustomGroup
 from groups.forms import CustomGroupForm
 
-
+# view for display form for create new group and list of user's groups
 @csrf_protect
 @login_required
 def index(request):
@@ -21,6 +21,7 @@ def index(request):
 	group_form = CustomGroupForm()
 	return render_to_response('groups/index.html', {'groups': groups, 'form': group_form}, context)
 
+# view for handle creation of new group
 @csrf_protect
 @login_required
 def create(request):
@@ -42,6 +43,7 @@ def create(request):
 
 	return HttpResponseRedirect(reverse('groups:index'))
 
+# view for handle deletion of existing group (also checks validity of such a request, e.g requested user is owner of group)
 @login_required
 def delete(request, groupid):
 	context = RequestContext(request)
@@ -58,6 +60,7 @@ def delete(request, groupid):
 	
 	return HttpResponseRedirect(reverse('groups:index'))
 
+# view for display editation page of existing group. Also checks validity of such a request
 @login_required
 def edit(request, groupid):
 	context = RequestContext(request)
@@ -73,6 +76,7 @@ def edit(request, groupid):
 	
 	return render_to_response('groups/edit.html', {'group': group, 'users': group.users.all(), 'form': None}, context)
 
+# view for handle removing user from existing group. Also checks validity of such a request
 @login_required
 def remove_user(request, groupid, userid):
 	context = RequestContext(request)
@@ -93,6 +97,7 @@ def remove_user(request, groupid, userid):
 	
 	return HttpResponseRedirect(reverse('groups:edit', args=(groupid,)))
 
+# view for handle adding user to existing group. Also checks validity of such a request
 @login_required
 def add_user(request, groupid, userid):
 	context = RequestContext(request)

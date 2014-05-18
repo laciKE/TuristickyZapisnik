@@ -1,4 +1,5 @@
 # SECURITY WARNING: keep the secret key used in production secret!
+# Import secret key from text file from different location on openshift environment and local environment
 
 import os
 
