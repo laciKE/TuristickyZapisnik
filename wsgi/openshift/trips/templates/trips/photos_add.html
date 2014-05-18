@@ -15,5 +15,34 @@
 	{% csrf_token %}
 	{{ form.as_p }}
 </form>
+<input type="submit" id="upload_photos" data-icon="action" value="{% trans 'Upload photos' %}" />
+
+<script type="text/javascript">
+	// "addPhotos" is the camelized version of the HTML element's ID
+	Dropzone.options.addPhotos = {
+	maxFilesize: 2, // MB
+	autoProcessQueue : false,	// Prevents Dropzone from uploading dropped files immediately
+	addRemoveLinks: true,
+	init : function() {
+		
+		dropzone = this;
+		$("#upload_photos").click(function() {
+				dropzone.processQueue(); // tell Dropzone to process all queued files.
+ 		});
+ 		// remove uploaded file from dropzone box
+ 		this.on("success", function(file) {
+			this.removeFile(file);
+		});
+		// after start processing upload, set autoProcessQueue to true for autoupload all the files (not only parallelUploads files) 
+		this.on("processing", function() {
+			this.options.autoProcessQueue = true;
+		});
+		// after processing all files in queue, stop autoupload
+ 		this.on("queuecomplete", function() {
+			this.options.autoProcessQueue = false;
+ 		});
+	}
+};
+</script>
 
 {% endblock %}
