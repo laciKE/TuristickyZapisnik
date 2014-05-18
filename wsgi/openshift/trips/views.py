@@ -9,10 +9,8 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.template.context import RequestContext
 from django.views.decorators.csrf import csrf_protect
 from groups.models import CustomGroup
-from trips.models import Trip
-from trips.forms import TripForm
-
-# Create your views here.
+from trips.models import Trip, Comment, Photo
+from trips.forms import TripForm, CommentForm
 
 
 @login_required
@@ -58,11 +56,117 @@ def view(request, tripid):
 	try:
 		trip = Trip.objects.get(pk=tripid)
 		if __shared_trip(trip, user):
-			return render_to_response('trips/view.html', {'trip': trip}, context)
+			photos = trip.photo_set.all()
+			comments = trip.comment_set.all().order_by('-id')
+			comment_form = None
+			if (user.is_authenticated()):
+				comment_form = CommentForm()
+			return render_to_response('trips/view.html', {'trip': trip, 'photos': photos, 'comments': comments, 'comment_form': comment_form}, context)
 		else:
 			messages.error(request, _('You are not allowed to view this trip.'))
 	except Trip.DoesNotExist:
 		messages.error(request, _('You can not view non-existing trip.'))
+	
+	return HttpResponseRedirect(reverse('home'))
+
+@csrf_protect
+@login_required
+def add_comment(request, tripid):
+	context = RequestContext(request)
+	user = request.user
+	try:
+		trip = Trip.objects.get(pk=tripid)
+		if __shared_trip(trip, user):
+			if request.method == 'POST':
+				comment_form = CommentForm(data=request.POST)
+				if comment_form.is_valid():
+					comment = comment_form.save(commit=False)
+					comment.author = user
+					comment.trip = trip
+					try:
+						comment.save()
+						messages.success(request, _('Successfully added comment.'))
+					except ValidationError, e:
+						messages.error(request, e.message)
+				else:
+					messages.error(request, comment_form.errors)
+
+			return HttpResponseRedirect(reverse('trips:view', args=(tripid,)))
+		else:
+			messages.error(request, _('You are not allowed to comment this trip.'))
+
+	except Trip.DoesNotExist:
+		messages.error(request, _('You can not comment non-existing trip.'))
+	
+	return HttpResponseRedirect(reverse('home'))
+
+@csrf_protect
+@login_required
+def add_photos(request, tripid):
+	context = RequestContext(request)
+	user = request.user
+	try:
+		trip = Trip.objects.get(pk=tripid)
+		if __shared_trip(trip, user):
+			if (request.method == 'POST') and ('file' in request.FILES):
+				photo = Photo(image=request.FILES['file'])
+				photo.trip = trip
+				try:
+					photo.save()
+					messages.success(request, _('Successfully upload photo.'))
+				except ValidationError, e:
+					messages.error(request, e.message)
+
+				return HttpResponseRedirect(reverse('trips:edit_photos', args=(tripid,)))
+			else:
+				return render_to_response('trips/photos_add.html', {'trip': trip}, context)
+
+		else:
+			messages.error(request, _('You are not allowed to add photo to this trip.'))
+			return HttpResponseRedirect(reverse('trips:view', args=(tripid,)))
+
+
+	except Trip.DoesNotExist:
+		messages.error(request, _('You can not add photo to non-existing trip.'))
+	
+	return HttpResponseRedirect(reverse('home'))
+
+@csrf_protect
+@login_required
+def edit_photos(request, tripid):
+	context = RequestContext(request)
+	user = request.user
+	try:
+		trip = Trip.objects.get(pk=tripid)
+		photos = trip.photo_set.all()
+		if __shared_trip(trip, user):
+			if request.method == 'POST':
+				try:
+					for photo in photos:
+						id = str(photo.id)
+						if request.POST.has_key(id):
+							edited_photo = request.POST.get(id)
+							if photo.title != edited_photo:
+								photo.title = edited_photo
+								photo.save()
+						else:
+							photo.delete()
+
+					photos = trip.photo_set.all()
+					messages.success(request, _('Successfully edited photos.'))
+				except ValidationError, e:
+					messages.error(request, e.message)
+				except ValueError, e:
+					messages.error(request, e.message)
+
+			return render_to_response('trips/photos_edit.html', {'trip': trip, 'photos': photos}, context)
+
+		else:
+			messages.error(request, _('You are not allowed to edit photos of this trip.'))
+			return HttpResponseRedirect(reverse('trips:view', args=(tripid,)))
+
+	except Trip.DoesNotExist:
+		messages.error(request, _('You can not edit photos of non-existing trip.'))
 	
 	return HttpResponseRedirect(reverse('home'))
 

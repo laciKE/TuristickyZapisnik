@@ -23,8 +23,17 @@ function view_gpx(gpx){
 		"OSM Mapnik": osm_mapnik,
 	};
 
+	var elevation = L.control.elevation({
+	    position: "topright",
+    	theme: "purple-theme", //default: lime-theme
+	    width: 300,
+    	height: 125,
+		collapsed: true
+	});
+	elevation.addTo(map);
+
 	L.control.layers(baseMaps, {}).addTo(map);
-	
+
 	var gpxLayer = new L.GPX(gpx, {
 		async: true,
 		marker_options: {
@@ -32,6 +41,8 @@ function view_gpx(gpx){
 		    endIconUrl: '',
     		shadowUrl: ''
 		}
+	}).on("addline",function(e){
+		elevation.addData(e.line);
 	}).on('loaded', function(e) {
 		var html = '<span>Distance: ' + (gpxLayer.get_distance()/1000).toFixed(2) + ' km</span><br/>';
 		if (gpxLayer.get_total_time()) {
@@ -48,7 +59,7 @@ function view_gpx(gpx){
 		$('#trip_stats').html(html);
 
 		map.fitBounds(e.target.getBounds());
-		
+		/*
 		try {
 			var elevation_data = gpxLayer.get_elevation_data();
 			$('#map').after("<canvas id='elevation_profile'></canvas>");
@@ -90,5 +101,6 @@ function view_gpx(gpx){
 		} catch (e) {
 			console.log(e);
 		}
+		*/
 	}).addTo(map);
 }
