@@ -5,8 +5,19 @@
 
 {% block extrahead %}
 	<link rel="stylesheet" type="text/css" href="{% static 'css/leaflet.min.css' %}" />
+	
 	<script src="{% static 'js/leaflet.js' %}"></script>
 
+	{% if trip.gpx_log %}
+		<link rel="stylesheet" type="text/css" href="{% static 'css/Leaflet.Elevation-0.0.2.css' %}" />
+
+		<!--<script src="{% static 'js/leaflet-gpx.js' %}"></script>-->
+		<script src="{% static 'js/leaflet-gpx.min.js' %}"></script>
+		<script src="{% static 'js/d3.v3.min.js' %}"></script>
+		<script src="{% static 'js/Leaflet.Elevation-0.0.2.min.js' %}"></script>
+		<script src="{% static 'js/map.js' %}"></script>
+	{% endif %}
+	
 	{% if photos %}
 			<link rel="stylesheet" type="text/css" href="{% static 'css/photoswipe.css' %}" />
 			<script src="{% static 'js/klass.min.js' %}"></script>
@@ -48,9 +59,6 @@ Public trip: {% if trip.public %}{% trans "yes" %}{% else %}{% trans "no" %}{% e
 	<p id="trip_stats">{% trans 'Loading gpx file..' %}</p>
 	<div id="map"></div>
 
-	<!--<script src="{% static 'js/leaflet-gpx.js' %}"></script>-->
-	<script src="{% static 'js/leaflet-gpx.min.js' %}"></script>
-	<script src="{% static 'js/map.js' %}"></script>
 	<script>
 		view_gpx('{{ trip.gpx_log.url }}');
 	</script>
