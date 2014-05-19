@@ -21,6 +21,7 @@
 	// "addPhotos" is the camelized version of the HTML element's ID
 	Dropzone.options.addPhotos = {
 	maxFilesize: 2, // MB
+	parallelUploads: 1, // number of parallel files uploads
 	autoProcessQueue : false,	// Prevents Dropzone from uploading dropped files immediately
 	addRemoveLinks: true,
 	init : function() {
