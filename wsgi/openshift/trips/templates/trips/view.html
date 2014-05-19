@@ -44,7 +44,11 @@
 Created: {{ trip.created }}, last change: {{ trip.modified }}<br/>
 Public trip: {% if trip.public %}{% trans "yes" %}{% else %}{% trans "no" %}{% endif %}<br/>
 {% if trip.owner == user %}
-	<a href="{% url 'trips:edit' trip.id %}" data-ajax="false" >Edit trip</a>
+	<div data-role="controlgroup" data-type="horizontal">
+	<a href="{% url 'trips:edit_photos' trip.id %}" class="ui-btn ui-corner-all ui-shadow ui-icon-camera ui-btn-icon-left" data-ajax="false" >{% trans 'Photos' %}</a>
+	<a href="{% url 'trips:share' trip.id %}" class="ui-btn ui-corner-all ui-shadow ui-icon-user ui-btn-icon-left" data-ajax="false" >{% trans 'Share trip' %}</a>
+	<a href="{% url 'trips:edit' trip.id %}" class="ui-btn ui-corner-all ui-shadow ui-icon-edit ui-btn-icon-left" data-ajax="false" >{% trans 'Edit trip' %}</a>
+</div>
 {% else %}
 	{% trans "Created by " %}<a href="{% url 'users:profile' trip.owner.username %}">{{ trip.owner.username }}</a>
 {% endif %}

@@ -123,13 +123,12 @@ def add_photos(request, tripid):
 				photo.trip = trip
 				try:
 					photo.save()
-					messages.success(request, _('Successfully upload photo.'))
+					#messages.success(request, _('Successfully upload photo.'))
+					return render_to_response('trips/photos_add.html', {'photo': photo}, context)					
 				except ValidationError, e:
 					messages.error(request, e.message)
 
-				return HttpResponseRedirect(reverse('trips:edit_photos', args=(tripid,)))
-			else:
-				return render_to_response('trips/photos_add.html', {'trip': trip}, context)
+			return HttpResponseRedirect(reverse('trips:edit_photos', args=(tripid,)))
 
 		else:
 			messages.error(request, _('You are not allowed to add photo to this trip.'))
