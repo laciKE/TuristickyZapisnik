@@ -3,11 +3,61 @@
 {% load staticfiles %}
 {% load i18n %}
 
+{% block extrahead %}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/dropzone.css' %}" />
+	<script src="{% static 'js/dropzone.min.js' %}"></script>
+{% endblock %}
+
 {% block content %}
 <h2>{% trans "Edit photos from trip" %} <a href="{% url 'trips:view' trip.id %}" data-ajax="false" >{{ trip.title }}</a></h2>
-<p><a href="{% url 'trips:add_photos' trip.id %}" data-ajax="false" >{% trans "Add photos to this trip" %}</a></p>
+
+<form id="add_photos" class="dropzone" method="post" action="{% url 'trips:add_photos' trip.id %}" enctype="multipart/form-data" data-ajax="false" >
+	{% csrf_token %}
+	{{ form.as_p }}
+</form>
+<input type="submit" id="upload_photos" data-icon="action" value="{% trans 'Upload photos' %}" />
+
+<script type="text/javascript">
+	// "addPhotos" is the camelized version of the HTML element's ID
+	Dropzone.options.addPhotos = {
+	maxFilesize: 2, // MB
+	autoProcessQueue : false,	// Prevents Dropzone from uploading dropped files immediately
+	addRemoveLinks: true,
+	init : function() {
+		
+		dropzone = this;
+		$("#upload_photos").click(function() {
+				dropzone.processQueue(); // tell Dropzone to process all queued files.
+ 		});
+ 		// remove uploaded file from dropzone box and display it in edit form
+ 		this.on("success", function(file, response) {
+			this.removeFile(file);
+			$('#Gallery_thumb').append(response);
+			$('#Gallery_thumb a:last').click(function() { //add eventlistener for removing photo from list
+				$(this).parent().hide(500, function() {
+					$(this).remove();
+				});
+			});
+			$('#Gallery_thumb li:last').trigger('create'); //tell jqm about new input element
+			$('#photos_edit').show(500); //show form for edit photos
+		});
+		// after start processing upload, set autoProcessQueue to true for autoupload all the files (not only parallelUploads files) 
+		this.on("processing", function() {
+			this.options.autoProcessQueue = true;
+		});
+		// after processing all files in queue, stop autoupload
+ 		this.on("queuecomplete", function() {
+			this.options.autoProcessQueue = false;
+ 		});
+	}
+};
+</script>
+
 {% if photos %}
-	<form id="photos_edit" method="post" action="{% url 'trips:edit_photos' trip.id %}" data-ajax="false">
+	<form id="photos_edit" method="post" action="{% url 'trips:edit_photos' trip.id %}" data-ajax="false" >
+{% else %}
+	<form id="photos_edit" method="post" action="{% url 'trips:edit_photos' trip.id %}" data-ajax="false" style="display:none" >
+{% endif %}
 		{% csrf_token %}
 		<ul id="Gallery_thumb" class="gallery gallery-edit">
 		{% for photo in photos %}
@@ -16,6 +66,5 @@
 		</ul>
 		<input type="submit" data-icon="edit" value="{% trans 'Update photos' %}" />
 	</form>
-{% endif %}
 
 {% endblock %}
