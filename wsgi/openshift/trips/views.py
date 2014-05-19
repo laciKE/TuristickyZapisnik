@@ -13,6 +13,7 @@ from trips.models import Trip, Comment, Photo
 from trips.forms import TripForm, CommentForm
 
 
+# view for display list of user's trips
 @login_required
 def index(request):
 	context = RequestContext(request)
@@ -20,11 +21,15 @@ def index(request):
 	trips = user.trip_set.all().order_by('-id')
 	return render_to_response('trips/index.html', {'trips': trips}, context)
 
+
+# view for display list of all users public trips
 def public(request):
 	context = RequestContext(request)
 	trips = Trip.objects.filter(public=True).order_by('-id')
 	return render_to_response('trips/public.html', {'trips': trips}, context)
 
+
+# view for display handle creation of new trip
 @csrf_protect
 @login_required
 def create(request):
@@ -50,6 +55,8 @@ def create(request):
 
 	return render_to_response('trips/create.html', {'form': trip_form}, context)
 
+
+# view for display information about concrete trip
 def view(request, tripid):
 	context = RequestContext(request)
 	user = request.user
@@ -69,6 +76,7 @@ def view(request, tripid):
 	
 	return HttpResponseRedirect(reverse('home'))
 
+# view for handle adding comments to the trip
 @csrf_protect
 @login_required
 def add_comment(request, tripid):
@@ -100,6 +108,8 @@ def add_comment(request, tripid):
 	
 	return HttpResponseRedirect(reverse('home'))
 
+
+# view for handle adding photos to the trip
 @csrf_protect
 @login_required
 def add_photos(request, tripid):
@@ -131,6 +141,8 @@ def add_photos(request, tripid):
 	
 	return HttpResponseRedirect(reverse('home'))
 
+
+# view for display and handle editation photos from the trip
 @csrf_protect
 @login_required
 def edit_photos(request, tripid):
@@ -171,6 +183,7 @@ def edit_photos(request, tripid):
 	return HttpResponseRedirect(reverse('home'))
 
 
+# view for handle delete the trip
 @login_required
 def delete(request, tripid):
 	context = RequestContext(request)
@@ -187,6 +200,8 @@ def delete(request, tripid):
 	
 	return HttpResponseRedirect(reverse('trips:index'))
 
+
+# view for display and handle editation of the trip
 @csrf_protect
 @login_required
 def edit(request, tripid):
@@ -222,6 +237,7 @@ def edit(request, tripid):
 	
 	return render_to_response('trips/edit.html', {'trip': trip, 'form': trip_form}, context)
 
+# view for display share page of the trip
 @login_required
 def share(request, tripid):
 	context = RequestContext(request)
@@ -237,6 +253,7 @@ def share(request, tripid):
 	
 	return render_to_response('trips/share.html', {'trip': trip, 'users': trip.share_users.all(), 'groups': trip.share_groups.all(), 'user_groups': user.customgroup_set.all()}, context)
 
+# view for handle removing user from sharing existing tripp
 @login_required
 def remove_user(request, tripid, userid):
 	context = RequestContext(request)
@@ -257,6 +274,7 @@ def remove_user(request, tripid, userid):
 	
 	return HttpResponseRedirect(reverse('trips:share', args=(tripid,)))
 
+# view for handle adding user for sharing existing tripp
 @login_required
 def add_user(request, tripid, userid):
 	context = RequestContext(request)
@@ -281,6 +299,8 @@ def add_user(request, tripid, userid):
 	
 	return HttpResponseRedirect(reverse('trips:share', args=(tripid,)))
 
+
+# view for handle removing group from sharing existing tripp
 @login_required
 def remove_group(request, tripid, groupid):
 	context = RequestContext(request)
@@ -301,6 +321,8 @@ def remove_group(request, tripid, groupid):
 	
 	return HttpResponseRedirect(reverse('trips:share', args=(tripid,)))
 
+
+# view for handle adding group for sharing existing tripp
 @login_required
 def add_group(request, tripid, groupid):
 	context = RequestContext(request)
@@ -325,6 +347,8 @@ def add_group(request, tripid, groupid):
 	
 	return HttpResponseRedirect(reverse('trips:share', args=(tripid,)))
 
+
+# helper function, check if trip is shared with user
 def __shared_trip(trip, user):
 	shared_trip = (trip.owner == user) or trip.public
 	shared_trip |= (user in trip.share_users.all())

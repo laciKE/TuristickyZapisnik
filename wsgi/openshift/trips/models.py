@@ -21,8 +21,8 @@ def path_and_rename(path):
 			return os.path.join(path, str(instance.trip.owner.id), filename)
 	return wrapper
 
+# Trip model with all fields related with real trips
 class Trip(models.Model):
-
 	#basic trip properties
 	title = models.CharField(_('title'), max_length=80)
 	owner = models.ForeignKey(User)
@@ -43,10 +43,12 @@ class Trip(models.Model):
         blank=True, help_text=_('The groupss sharing this trip.'),
         related_name="shared_trips", related_query_name="trips")
 
+	# helper function for validation that trip begins before it ends
 	def validate_trip_begin_end(self):        
 		if self.trip_begin > self.trip_end:
 			raise ValidationError(_('Trip must ends after it begins'))
 
+	# helper function for validation uniqe trip title per user
 	def validate_unique_title_owner(self):        
 		qs = Trip.objects.filter(title=self.title)
 		if self.id:
@@ -54,6 +56,7 @@ class Trip(models.Model):
 		if qs.filter(owner=self.owner).exists():
 			raise ValidationError(_('Trip title must be unique per user'))
 
+	# Override save() due to custom validation
 	def save(self):
 		self.validate_trip_begin_end()
 		self.validate_unique_title_owner()
@@ -63,18 +66,18 @@ class Trip(models.Model):
 	def __unicode__(self):
 		return self.title + '__' + self.owner.username
 
-
+# comment model with reference to author, trip and comment message
 class Comment(models.Model):
 	trip = models.ForeignKey(Trip)
 	author = models.ForeignKey(User)
 	message = models.TextField(_('message'), max_length=80, blank=False)
 	created = models.DateTimeField(auto_now_add=True)
+
 	# Override the __unicode__() method to return out something meaningful
 	def __unicode__(self):
 		return self.trip.title + '__' + self.author.username + "__" + self.message[0:40]
 
-
-
+# comment model with reference to trip, photo image and thumbnail and text photo title
 class Photo(models.Model):
 	trip = models.ForeignKey(Trip)
 	title = models.CharField(_('title'), max_length=80, blank=True)

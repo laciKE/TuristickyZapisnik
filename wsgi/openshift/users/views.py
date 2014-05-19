@@ -15,16 +15,18 @@ from django.contrib.auth.forms import PasswordChangeForm
 from users.forms import UserForm, UserEditForm, UserProfileForm
 from trips.models import Trip
 
+# only redirects user to home page
 def index(request):
-	context = RequestContext(request)
-	return render_to_response('users/index.html', {}, context)
+    return HttpResponseRedirect(reverse('home'))
 
+# view for display user profile with basic info
 def profile(request, username):
 	context = RequestContext(request)
 	user = get_object_or_404(User, username=username)
 	trips = user.trip_set.filter(public=True).order_by('-id')
 	return render_to_response('users/profile.html', {'profile': user, 'trips': trips}, context)
 
+# view for display and handle registration of users
 @sensitive_post_parameters()
 @csrf_protect
 @never_cache
@@ -86,6 +88,7 @@ def registration(request):
     # Render the template depending on the context.
     return render_to_response( 'users/registration.html', {'user_form': user_form, 'profile_form': profile_form, 'registered': registered}, context)
 
+# view for display and handle login of users
 @sensitive_post_parameters()
 @csrf_protect
 @never_cache
@@ -130,6 +133,7 @@ def user_login(request):
         # blank dictionary object...
         return render_to_response('users/login.html', {}, context)
 
+# view for handle logout of users
 @login_required
 def user_logout(request):
     # Since we know the user is logged in, we can now just log them out.
@@ -140,6 +144,8 @@ def user_logout(request):
     # Take the user back to the homepage.
     return HttpResponseRedirect(reverse('home'))
 
+
+# view for display and handle editation of user profiles
 @sensitive_post_parameters()
 @csrf_protect
 @login_required
@@ -192,7 +198,8 @@ def edit(request):
     # Render the template depending on the context.
     return render_to_response( 'users/edit.html', {'user_form': user_form, 'profile_form': profile_form}, context)
 
-#from django.contrib.auth.views, modofied post_change_redirect and messages
+# view for display and handle changing user passwords
+#from django.contrib.auth.views, modified post_change_redirect and messages
 @sensitive_post_parameters()
 @csrf_protect
 @login_required
