@@ -3,7 +3,9 @@ function view_gpx(gpx){
 	var osm_mapnik = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
     	attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
 	});
-
+	var map1_eu = L.tileLayer('http://alpha.map1.eu/tiles/{z}/{x}/{y}.jpg', {
+    	attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+	});
 	freemap_caratlas = L.tileLayer('http://tiles.freemap.sk/A/{z}/{x}/{y}.jpeg', {
 		attribution: "<a href='http://www.freemap.sk'>Freemap Slovakia</a>"
 	});
@@ -14,13 +16,14 @@ function view_gpx(gpx){
 		attribution: "<a href='http://www.freemap.sk'>Freemap Slovakia</a>"
 	});
 
-	var map = L.map('map', {layers: [freemap_caratlas, freemap_cyclemap, freemap_hiking, osm_mapnik]});
+	var map = L.map('map', {layers: [osm_mapnik]});
 
 	var baseMaps = {
+		"OSM Mapnik": osm_mapnik,
+		"Map1.eu": map1_eu,
 		"Freemap CarAtlas": freemap_caratlas,
 		"Freemap CycleMap": freemap_cyclemap,
 		"Freemap Hiking": freemap_hiking,
-		"OSM Mapnik": osm_mapnik,
 	};
 
 	var elevation = L.control.elevation({
